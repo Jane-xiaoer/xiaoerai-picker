@@ -64,12 +64,9 @@ function App() {
   const pickCard = (id) => {
     if (flyingId) return;
     window._sfx?.whoosh();
-    setFlyingId(id);
-    // after flight + flip, redirect to the room's subdomain
+    // immediate redirect — no fly-to-center / flip intermediate state
     const card = (window.CARDS || []).find(c => c.id === id);
-    setTimeout(() => {
-      if (card && card.href) window.location.href = card.href;
-    }, 1700);
+    if (card && card.href) window.location.href = card.href;
   };
 
   const backFromPage = () => {
