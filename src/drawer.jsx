@@ -2,7 +2,7 @@
 function DrawerClosed({ onOpen, disabled }) {
   return (
     <div className="drawer-closed" onClick={() => !disabled && onOpen()}>
-      <svg viewBox="0 0 620 140">
+      <svg className="drawer-front" viewBox="0 0 620 140">
         <g filter="url(#wobble)">
           {/* panel */}
           <rect x="4" y="4" width="612" height="132" fill="#ece2c8" stroke="#2e1e10" strokeWidth="2"/>
@@ -15,44 +15,40 @@ function DrawerClosed({ onOpen, disabled }) {
           <rect x="20" y="20" width="580" height="100" fill="none" stroke="#2e1e10" strokeWidth="1.4"/>
           <rect x="24" y="24" width="572" height="92" fill="none" stroke="#2e1e10" strokeWidth=".6" opacity=".6"/>
 
-          {/* brass handle — oval pull */}
+          {/* central oval engraved name plate "CABINET · N° 1" */}
           <g transform="translate(310, 70)">
-            <ellipse cx="0" cy="0" rx="58" ry="18" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1.6"/>
-            <ellipse cx="0" cy="0" rx="52" ry="14" fill="none" stroke="#2e1e10" strokeWidth=".8"/>
-            <ellipse cx="0" cy="0" rx="48" ry="12" fill="url(#hatch1)" opacity=".5"/>
-            {/* bolts */}
-            <circle cx="-44" cy="0" r="3" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1"/>
-            <circle cx="-44" cy="0" r="1.2" fill="#2e1e10"/>
-            <circle cx="44" cy="0" r="3" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1"/>
-            <circle cx="44" cy="0" r="1.2" fill="#2e1e10"/>
-            {/* engraved flourish above handle */}
-            <path d="M -30 -24 Q 0 -30 30 -24" fill="none" stroke="#2e1e10" strokeWidth=".8"/>
-            <circle cx="0" cy="-26" r="1.3" fill="#2e1e10"/>
+            <ellipse cx="0" cy="0" rx="90" ry="22" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1.6"/>
+            <ellipse cx="0" cy="0" rx="84" ry="17" fill="none" stroke="#2e1e10" strokeWidth=".7"/>
+            <ellipse cx="0" cy="0" rx="80" ry="14" fill="url(#hatch1)" opacity=".35"/>
+            <text x="0" y="4" textAnchor="middle"
+                  fontFamily="'Special Elite', monospace"
+                  fontSize="11"
+                  letterSpacing="3"
+                  fill="#2e1e10">CABINET · N° 1</text>
           </g>
 
-          {/* escutcheons left + right */}
-          {[100, 520].map((x) => (
-            <g key={x} transform={`translate(${x}, 70)`}>
-              <rect x="-16" y="-18" width="32" height="36" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1.3"/>
-              <rect x="-13" y="-15" width="26" height="30" fill="none" stroke="#2e1e10" strokeWidth=".6"/>
-              <circle cx="0" cy="-4" r="4" fill="#2e1e10"/>
-              <rect x="-1.5" y="-4" width="3" height="14" fill="#2e1e10"/>
-              {/* hatching */}
-              <rect x="-14" y="-16" width="28" height="32" fill="url(#hatch1)" opacity=".35"/>
+          {/* dual round brass pull handles — left + right */}
+          {[140, 480].map((cx) => (
+            <g key={cx} transform={`translate(${cx}, 70)`}>
+              {/* outer rim */}
+              <circle cx="0" cy="0" r="16" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1.6"/>
+              {/* inner ring */}
+              <circle cx="0" cy="0" r="12" fill="none" stroke="#2e1e10" strokeWidth=".8"/>
+              {/* brushed brass hatch */}
+              <circle cx="0" cy="0" r="10" fill="url(#hatch1)" opacity=".55"/>
+              {/* center bolt */}
+              <circle cx="0" cy="0" r="2.4" fill="#2e1e10"/>
+              {/* subtle highlight crescent */}
+              <path d="M -8 -5 Q -3 -11 5 -9" fill="none" stroke="#2e1e10" strokeWidth=".5" opacity=".5"/>
             </g>
           ))}
-
-          {/* engraved label plate */}
-          <g transform="translate(310, 26)">
-            <rect x="-50" y="-9" width="100" height="14" fill="#ece2c8" stroke="#2e1e10" strokeWidth=".8"/>
-            <text x="0" y="1.5" textAnchor="middle"
-                  fontFamily="'Special Elite', monospace"
-                  fontSize="8"
-                  letterSpacing="2"
-                  fill="#2e1e10">CABINET · N° 11</text>
-          </g>
         </g>
       </svg>
+      <div className="drawer-callout">
+        <span className="dash"/>
+        <span>Open the Cabinet</span>
+        <span className="dash"/>
+      </div>
     </div>
   );
 }

@@ -1,17 +1,24 @@
 // scene.jsx — desk band + engraved objects + dust + plate ornaments
 function DeskLine() {
   return (
-    <svg className="desk-line" viewBox="0 0 1600 80" preserveAspectRatio="none">
+    <svg className="desk-line" viewBox="0 0 1600 70" preserveAspectRatio="none">
       <g filter="url(#wobble)">
-        {/* front edge line */}
-        <path d="M 0 20 Q 400 18 800 22 T 1600 20"
-              fill="none" stroke="#2e1e10" strokeWidth="1.8"/>
-        {/* hatch shading below */}
-        <path d="M 0 22 L 1600 22 L 1600 80 L 0 80 Z"
-              fill="url(#hatchHoriz)" opacity=".5"/>
-        {/* secondary line */}
-        <path d="M 0 40 Q 400 42 800 38 T 1600 40"
-              fill="none" stroke="#2e1e10" strokeWidth=".6" opacity=".5"/>
+        {/* desk top surface — thick edge line */}
+        <path d="M 0 8 Q 400 6 800 10 T 1600 8"
+              fill="none" stroke="#2e1e10" strokeWidth="2.4"/>
+        {/* faint inner top line (depth shadow on surface) */}
+        <path d="M 0 16 Q 400 18 800 14 T 1600 16"
+              fill="none" stroke="#2e1e10" strokeWidth=".5" opacity=".35"/>
+        {/* desk front face (thickness band — subtle hatch) */}
+        <rect x="0" y="20" width="1600" height="26" fill="url(#hatchHoriz)" opacity=".42"/>
+        {/* desk front bottom edge */}
+        <path d="M 0 48 Q 400 50 800 46 T 1600 48"
+              fill="none" stroke="#2e1e10" strokeWidth="1.5"/>
+        {/* small leg hints — short strokes at far left + right */}
+        <path d="M 22 48 L 18 66 M 46 48 L 42 66"
+              stroke="#2e1e10" strokeWidth=".9" opacity=".55" fill="none"/>
+        <path d="M 1578 48 L 1582 66 M 1554 48 L 1558 66"
+              stroke="#2e1e10" strokeWidth=".9" opacity=".55" fill="none"/>
       </g>
     </svg>
   );
@@ -128,18 +135,21 @@ function Inkwell() {
 }
 
 function PlateTitle({ lampOn, drawerOpen }) {
-  const title = drawerOpen ? 'Cabinet, Open' : 'The Scholar\u2019s Desk';
-  const fig = drawerOpen ? 'PL. II — Interior' : 'PL. I — Arrangement';
+  const title = drawerOpen ? 'Cabinet, Open' : "Xiaoer's Desk";
+  const fig = drawerOpen ? 'PL. II — INTERIOR' : 'PL. I — ARRANGEMENT';
+  const state = lampOn ? 'LIT' : 'UNLIT';
   return (
     <div className="plate-title">
-      <div className="eyebrow">
-        — <span style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 700, letterSpacing: '.08em' }}>小耳奇物录</span>
-        <span style={{ margin: '0 .5em', opacity: .55 }}>·</span>
-        <span style={{ fontStyle: 'italic' }}>Xiaoer&rsquo;s Folio of Curiosities</span> —
+      <div className="orn-row top">
+        <span className="orn-rule"/>
+        <span className="orn-fleuron">❦</span>
+        <span className="orn-rule"/>
       </div>
       <h1>{title}</h1>
-      <div className="rule"/>
-      <div className="fig">{fig} · {lampOn ? 'Lit' : 'Unlit'}</div>
+      <div className="orn-row bottom">
+        <span className="orn-rule with-caps"/>
+      </div>
+      <div className="fig">{fig} · {state}</div>
     </div>
   );
 }

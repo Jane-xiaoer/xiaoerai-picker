@@ -139,15 +139,15 @@ html, body {
 }
 .plate-title h1 {
   margin: 0;
-  font-size: 28px;
+  font-size: 42px;
   font-style: italic;
   font-weight: 500;
-  letter-spacing: .05em;
+  letter-spacing: .03em;
 }
 .plate-title .fig {
   font-family: 'Special Elite', monospace;
-  font-size: 10px;
-  letter-spacing: .32em;
+  font-size: 15px;
+  letter-spacing: .22em;
   color: var(--ink-faint);
   margin-top: 4px;
   text-transform: uppercase;
@@ -157,13 +157,58 @@ html, body {
   margin: 10px auto 0; opacity: .6;
 }
 
+/* engraved ornament rows above + below the title */
+.plate-title .orn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.plate-title .orn-row.top    { margin-bottom: 2px; }
+.plate-title .orn-row.bottom { margin-top: 6px; }
+
+.plate-title .orn-rule {
+  display: block;
+  width: 180px;
+  height: 1px;
+  background: var(--ink);
+  opacity: .72;
+  position: relative;
+}
+/* bottom rule is one longer line with small diamonds at each end */
+.plate-title .orn-rule.with-caps {
+  width: 380px;
+}
+.plate-title .orn-rule.with-caps::before,
+.plate-title .orn-rule.with-caps::after {
+  content: '';
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--ink);
+  transform: rotate(45deg);
+  top: -3px;
+  opacity: .85;
+}
+.plate-title .orn-rule.with-caps::before { left:  -3px; }
+.plate-title .orn-rule.with-caps::after  { right: -3px; }
+
+.plate-title .orn-fleuron {
+  font-family: 'Cormorant Garamond', 'EB Garamond', serif;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink);
+  opacity: .85;
+  transform: translateY(-1px);
+}
+
 /* ==================== lamp ==================== */
 .lamp-holder {
   position: absolute;
   right: 14%;
-  top: 8%;
-  width: 260px;
-  height: 520px;
+  top: 62%;
+  transform: translateY(-89%); /* base disc center aligns to desk top surface (SVG y475 of 520 in original) */
+  width: 200px;
+  height: 420px;
   z-index: 5;
   transition: filter 1.4s ease;
 }
@@ -190,7 +235,7 @@ html, body {
   position: absolute;
   left: 0; right: 0;
   top: 62%;
-  height: 80px;
+  height: 70px;
   z-index: 3;
   pointer-events: none;
 }
@@ -199,25 +244,48 @@ html, body {
   z-index: 4;
   pointer-events: none;
 }
-.book { left: 6%;  top: 62%; width: 260px; height: 70px; }
-.mug  { left: 22%; top: 52%; width: 140px; height: 160px; }
-.pen  { left: 4%;  top: 80%; width: 280px; height: 40px; transform: rotate(6deg); }
-.inkwell { left: 20%; top: 76%; width: 110px; height: 120px; }
+/* book + mug rest ON the desk top — bottoms physically touch the desk surface line */
+.book { left: 9%;  bottom: calc(38% - 20px); width: 260px; height: 70px; }
+.mug  { left: 22%; bottom: calc(38% - 14px); width: 140px; height: 160px; }
+.pen  { left: 4%;  top: 80%; width: 280px; height: 40px; transform: rotate(6deg); display: none; }
+.inkwell { left: 20%; top: 76%; width: 110px; height: 120px; display: none; }
 
 /* ==================== closed drawer (in room view) ==================== */
+/* tucked directly under the desk front edge so desk+cabinet read as one piece of furniture */
 .drawer-closed {
   position: absolute;
   left: 50%;
-  bottom: 4%;
+  top: calc(62% + 56px); /* desk top:62%, desk thickness ~56px → cabinet begins right below */
   transform: translateX(-50%);
-  width: 620px;
-  height: 140px;
+  width: min(760px, 58vw);
   z-index: 7;
   cursor: pointer;
   transition: transform .3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .drawer-closed:hover { transform: translateX(-50%) translateY(-2px); }
-.drawer-closed svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.drawer-closed svg.drawer-front { width: 100%; height: 150px; display: block; overflow: visible; }
+
+.drawer-callout {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: .38em;
+  color: var(--ink);
+  text-transform: uppercase;
+  opacity: .85;
+}
+.drawer-callout .dash {
+  display: block;
+  width: 38px; height: 1px;
+  background: var(--ink);
+  opacity: .55;
+}
 
 /* ==================== drawer overlay (top-down view) ==================== */
 .drawer-overlay {
@@ -291,8 +359,8 @@ html, body {
 /* ==================== hints ==================== */
 .hint {
   position: absolute;
-  left: 50%; bottom: 4%;
-  transform: translateX(-50%);
+  right: 9%;
+  top: calc(62% + 68px); /* desk-skirt area, right side under the lamp — close to the desk front edge */
   font-family: 'Special Elite', 'Courier New', monospace;
   color: var(--ink-faint);
   font-size: 12px;
@@ -304,6 +372,7 @@ html, body {
   background: rgba(236,226,200,.6);
   padding: 6px 18px;
   border: 1px solid rgba(46,30,16,.3);
+  white-space: nowrap;
 }
 @keyframes hintBlink {
   0%, 100% { opacity: .4; }

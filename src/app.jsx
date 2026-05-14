@@ -109,9 +109,6 @@ function App() {
         {!lampOn && view === 'room' && (
           <div className="hint">— Pull the cord —</div>
         )}
-        {lampOn && view === 'room' && (
-          <div className="hint">— Open the cabinet —</div>
-        )}
 
         {/* Back to room from drawer */}
         <button

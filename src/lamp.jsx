@@ -74,10 +74,10 @@ function Lamp({ on, onToggle }) {
 
         {/* ===== light beams removed — lamp-on shows as brighter warmer paper halo instead ===== */}
 
-        {/* ===== neck / rod with hatching ===== */}
+        {/* ===== neck / rod with hatching — extends down into the base disc so they physically meet ===== */}
         <g filter="url(#wobble)">
-          <rect x="124" y="150" width="12" height="280" fill="#ece2c8" stroke={ink} strokeWidth="1.3"/>
-          <rect x="126" y="150" width="10" height="280" fill="url(#hatch1)" opacity=".45"/>
+          <rect x="124" y="150" width="12" height="298" fill="#ece2c8" stroke={ink} strokeWidth="1.3"/>
+          <rect x="126" y="150" width="10" height="298" fill="url(#hatch1)" opacity=".45"/>
           {/* decorative rings */}
           {[180, 240, 300, 360].map(y => (
             <g key={y}>
@@ -88,6 +88,9 @@ function Lamp({ on, onToggle }) {
           {/* collar at top of rod */}
           <rect x="118" y="150" width="24" height="14" fill="#ece2c8" stroke={ink} strokeWidth="1.2"/>
           <rect x="120" y="155" width="20" height="4" fill="url(#hatch1)" opacity=".5"/>
+          {/* collar at bottom of rod (seats into base disc) */}
+          <rect x="118" y="430" width="24" height="14" fill="#ece2c8" stroke={ink} strokeWidth="1.2"/>
+          <rect x="120" y="433" width="20" height="4" fill="url(#hatch1)" opacity=".5"/>
         </g>
 
         {/* ===== base (heavy weighted disc) ===== */}

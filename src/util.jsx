@@ -4,7 +4,7 @@ window._util = {
   rand: (a, b) => a + Math.random() * (b - a),
 };
 
-// SFX: real wav clips for lamp-on / drawer-open / card-click; thunk kept as a tiny WebAudio pulse.
+// SFX: real wav clips for lamp-on / drawer-open / drawer-close / card-click.
 (function() {
   function makeClipPool(src, { count = 3, volume = .7 } = {}) {
     const pool = Array.from({ length: count }, () => {
@@ -20,11 +20,12 @@ window._util = {
     };
   }
 
-  const playLamp   = makeClipPool('assets/sfx/lamp-on.wav',     { count: 2, volume: .8 });
-  const playDrawer = makeClipPool('assets/sfx/drawer-open.wav', { count: 2, volume: .7 });
-  const playCard   = makeClipPool('assets/sfx/card-click.wav',  { count: 3, volume: .8 });
+  const playLamp        = makeClipPool('assets/sfx/lamp-on.wav',      { count: 2, volume: .8 });
+  const playDrawer      = makeClipPool('assets/sfx/drawer-open.wav',  { count: 2, volume: .7 });
+  const playDrawerClose = makeClipPool('assets/sfx/drawer-close.wav', { count: 2, volume: .8 });
+  const playCard        = makeClipPool('assets/sfx/card-click.wav',   { count: 3, volume: .8 });
 
-  // Tiny WebAudio thunk for "close drawer" (kept synthesized — no asset for it).
+  // WebAudio context kept for future use / autoplay-unblock priming.
   let ctx;
   const getCtx = () => {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -40,22 +41,9 @@ window._util = {
   window.addEventListener('keydown', armOnce, { once: true });
 
   window._sfx = {
-    clack: playLamp,     // lamp pull cord
-    drawer: playDrawer,  // pull drawer open
-    whoosh: playCard,    // click a card
-    thunk() {
-      const c = getCtx();
-      const t = c.currentTime;
-      const osc = c.createOscillator();
-      const g = c.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(70, t);
-      osc.frequency.exponentialRampToValueAtTime(40, t + .08);
-      g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(.28, t + .004);
-      g.gain.exponentialRampToValueAtTime(.0001, t + .3);
-      osc.connect(g).connect(c.destination);
-      osc.start(t); osc.stop(t + .35);
-    },
+    clack: playLamp,         // lamp pull cord
+    drawer: playDrawer,      // pull drawer open
+    whoosh: playCard,        // click a card
+    thunk: playDrawerClose,  // close drawer / back to desk
   };
 })();
