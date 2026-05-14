@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>小耳 · xiaoer ai</title>
+<meta name="description" content="小耳的三个馆藏 — 弹药库 / 走马灯 / 百物匣" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👂</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f5f3ee;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --warm: #b9986a;
+    --line: #d6d2c4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: 'Inter', 'Noto Serif SC', system-ui, sans-serif;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+  .lang {
+    position: fixed; top: 24px; right: 24px;
+    background: rgba(255,255,255,.7);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 12px; letter-spacing: .05em;
+    cursor: pointer;
+    user-select: none;
+    backdrop-filter: blur(8px);
+    transition: background .2s;
+  }
+  .lang:hover { background: #fff; }
+  header {
+    text-align: center;
+    padding: 96px 24px 48px;
+  }
+  h1 {
+    font-family: 'Noto Serif SC', 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(40px, 6vw, 72px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  h1 .dot { color: var(--warm); margin: 0 .1em; }
+  .sub {
+    margin-top: 14px;
+    color: var(--ink-soft);
+    font-size: clamp(13px, 1.4vw, 15px);
+    letter-spacing: .02em;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 32px 96px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; padding: 16px 20px 64px; gap: 18px; }
+    header { padding: 64px 20px 32px; }
+  }
+  .card {
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 36px 28px 32px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--ink);
+    overflow: hidden;
+    transition: transform .35s cubic-bezier(.2,.7,.3,1.1), box-shadow .35s, border-color .35s;
+    min-height: 320px;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 48px -24px rgba(26,26,26,.18), 0 2px 8px rgba(26,26,26,.05);
+    border-color: var(--warm);
+  }
+  .card .icon {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 22px;
+    transition: transform .35s;
+  }
+  .card:hover .icon { transform: rotate(-8deg) scale(1.05); }
+  .card h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-weight: 900;
+    font-size: 30px;
+    letter-spacing: -.01em;
+    margin-bottom: 8px;
+  }
+  .card .en {
+    color: var(--warm);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .card .desc {
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+    flex: 1;
+  }
+  .card .arrow {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+  .card .arrow svg {
+    transition: transform .3s;
+  }
+  .card:hover .arrow { color: var(--ink); }
+  .card:hover .arrow svg { transform: translateX(6px); }
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #999;
+    letter-spacing: .08em;
+  }
+  footer a { color: inherit; text-decoration: none; border-bottom: 1px dotted #bbb; }
+  footer a:hover { border-bottom-color: var(--warm); color: var(--warm); }
+
+  /* subtle grid wash */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: -1;
+  }
+</style>
+</head>
+<body>
+  <div class="lang" id="lang" role="button" tabindex="0">English</div>
+
+  <header>
+    <h1 data-zh="小耳<span class='dot'>·</span>馆藏" data-en="Xiaoer<span class='dot'>·</span>Collections">小耳<span class="dot">·</span>馆藏</h1>
+    <p class="sub" data-zh="三个空间 · 各取所需" data-en="three rooms · pick yours">三个空间 · 各取所需</p>
+  </header>
+
+  <main>
+    <a class="card" href="https://tools.xiaoerai.xyz">
+      <div class="icon">🗄️</div>
+      <h2 data-zh="弹药库" data-en="Arsenal">弹药库</h2>
+      <div class="en">ARSENAL</div>
+      <p class="desc" data-zh="350+ 精选 AI 工具墙 · 不知道叫啥的那个网站" data-en="350+ curated AI tools · the one whose name you can never remember">350+ 精选 AI 工具墙 · 不知道叫啥的那个网站</p>
+      <div class="arrow" data-zh="进入 · tools.xiaoerai.xyz" data-en="enter · tools.xiaoerai.xyz">
+        <span>进入 · tools.xiaoerai.xyz</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+    <a class="card" href="https://video.xiaoerai.xyz">
+      <div class="icon">🎞️</div>
+      <h2 data-zh="走马灯" data-en="Zoetrope">走马灯</h2>
+      <div class="en">ZOETROPE</div>
+      <p class="desc" data-zh="AI 视频作品集 · 流转的影像" data-en="AI video collection · images in motion">AI 视频作品集 · 流转的影像</p>
+      <div class="arrow" data-zh="进入 · video.xiaoerai.xyz" data-en="enter · video.xiaoerai.xyz">
+        <span>进入 · video.xiaoerai.xyz</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+
+    <a class="card" href="https://store.xiaoerai.xyz">
+      <div class="icon">📦</div>
+      <h2 data-zh="百物匣" data-en="Curio Box">百物匣</h2>
+      <div class="en">CURIO BOX</div>
+      <p class="desc" data-zh="艺术作品的衍生品 · 一格一物" data-en="art derivatives · one slot, one find">艺术作品的衍生品 · 一格一物</p>
+      <div class="arrow" data-zh="进入 · store.xiaoerai.xyz" data-en="enter · store.xiaoerai.xyz">
+        <span>进入 · store.xiaoerai.xyz</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+  </main>
+
+  <footer>
+    <span data-zh="© Jane · 小耳" data-en="© Jane · Xiaoer">© Jane · 小耳</span>
+    &nbsp;·&nbsp;
+    <a href="https://x.com/janexiaoer" target="_blank" rel="noopener">x / janexiaoer</a>
+  </footer>
+
+  <script>
+    const langBtn = document.getElementById('lang');
+    const KEY = 'xiaoerai-lang';
+    function apply(lang) {
+      document.documentElement.lang = lang === 'en' ? 'en' : 'zh-Hans';
+      document.querySelectorAll('[data-zh][data-en]').forEach(el => {
+        el.innerHTML = el.getAttribute(lang === 'en' ? 'data-en' : 'data-zh');
+      });
+      langBtn.textContent = lang === 'en' ? '中文' : 'English';
+      localStorage.setItem(KEY, lang);
+    }
+    const saved = localStorage.getItem(KEY);
+    if (saved === 'en') apply('en');
+    langBtn.addEventListener('click', () => apply(document.documentElement.lang === 'en' ? 'zh' : 'en'));
+    langBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); langBtn.click(); } });
+  </script>
+</body>
+</html>
