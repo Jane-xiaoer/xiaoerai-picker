@@ -132,7 +132,11 @@ function PlateTitle({ lampOn, drawerOpen }) {
   const fig = drawerOpen ? 'PL. II — Interior' : 'PL. I — Arrangement';
   return (
     <div className="plate-title">
-      <div className="eyebrow">— Folio of Curiosities —</div>
+      <div className="eyebrow">
+        — <span style={{ fontFamily: "'Noto Serif SC', serif", fontWeight: 700, letterSpacing: '.08em' }}>小耳奇物录</span>
+        <span style={{ margin: '0 .5em', opacity: .55 }}>·</span>
+        <span style={{ fontStyle: 'italic' }}>Xiaoer&rsquo;s Folio of Curiosities</span> —
+      </div>
       <h1>{title}</h1>
       <div className="rule"/>
       <div className="fig">{fig} · {lampOn ? 'Lit' : 'Unlit'}</div>
