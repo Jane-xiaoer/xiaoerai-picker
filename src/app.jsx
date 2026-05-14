@@ -10,7 +10,7 @@ const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 function App() {
-  const [lampOn, setLampOn] = React.useState(() => localStorage.getItem('lampOn') === '1');
+  const [lampOn, setLampOn] = React.useState(false);
   const [view, setView] = React.useState('room'); // room | drawer | card | page
   const [flyingId, setFlyingId] = React.useState(null);
   const [activePageId, setActivePageId] = React.useState(null);
@@ -44,7 +44,7 @@ function App() {
 
   const toggleLamp = () => {
     window._sfx?.clack();
-    setLampOn(v => { localStorage.setItem('lampOn', v ? '0' : '1'); return !v; });
+    setLampOn(v => !v);
   };
 
   const openDrawer = () => {
