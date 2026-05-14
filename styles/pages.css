@@ -1,0 +1,272 @@
+/* pages.css — engraving-style folio content pages */
+
+.folio-page {
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: auto;
+  background:
+    repeating-linear-gradient(0deg, rgba(46,30,16,.03) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse 3% 2% at 18% 12%, rgba(138,96,40,.18), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 82% 28%, rgba(138,42,24,.12), transparent 60%),
+    radial-gradient(ellipse 4% 3% at 26% 88%, rgba(138,96,40,.15), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 72% 72%, rgba(46,30,16,.12), transparent 60%),
+    var(--paper);
+}
+.folio-page::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.10  0 0 0 0.30 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: .35;
+  pointer-events: none;
+  z-index: 0;
+}
+.folio-page::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 75% 65% at 50% 55%, transparent 50%, rgba(60,40,18,.28) 90%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+}
+.folio-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 80px 60px 80px;
+  color: var(--ink);
+  font-family: 'EB Garamond', 'Cormorant Garamond', serif;
+}
+
+.folio-head { text-align: center; margin-bottom: 48px; }
+.folio-eyebrow {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.folio-title {
+  margin: 0 0 6px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+.folio-sub {
+  font-family: 'IM Fell English', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink-soft);
+  letter-spacing: .05em;
+}
+.folio-rule svg { width: 400px; height: 20px; margin: 16px auto 0; display: block; }
+
+/* ==================== Work grid ==================== */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 32px;
+  margin-top: 40px;
+}
+.work-card {
+  display: flex;
+  flex-direction: column;
+}
+.work-plate {
+  aspect-ratio: 200/140;
+  margin-bottom: 14px;
+  box-shadow: 2px 3px 0 rgba(46,30,16,.15);
+}
+.work-meta .work-n {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .3em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.work-meta h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+.work-meta .work-kind {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.work-meta p {
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* ==================== Intro ==================== */
+.intro-cols {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 56px;
+  margin-top: 40px;
+}
+.intro-bio p {
+  font-family: 'EB Garamond', serif;
+  font-size: 19px;
+  line-height: 1.68;
+  color: var(--ink);
+  margin: 0 0 18px;
+  text-wrap: pretty;
+}
+.intro-bio .dropcap .dc {
+  font-family: 'IM Fell English', serif;
+  font-size: 68px;
+  float: left;
+  line-height: .85;
+  padding: 6px 10px 0 0;
+  color: var(--ink);
+}
+.intro-timeline {
+  border-left: 1px solid var(--ink-soft);
+  padding-left: 28px;
+}
+.tl-head {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: .32em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.intro-timeline ol {
+  list-style: none; padding: 0; margin: 0;
+}
+.intro-timeline li {
+  display: grid;
+  grid-template-columns: 68px 14px 1fr;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-family: 'EB Garamond', serif;
+}
+.tl-year {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: var(--ink-faint);
+}
+.tl-mark {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ink-red);
+  justify-self: center;
+  margin-top: 6px;
+}
+.tl-t { font-size: 15px; line-height: 1.5; color: var(--ink); text-wrap: pretty; }
+
+/* ==================== About ==================== */
+.about-cols {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 48px;
+  margin-top: 40px;
+}
+.about-portrait {
+  box-shadow: 3px 4px 0 rgba(46,30,16,.15);
+}
+.about-body .tenets-h {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 26px;
+  margin: 0 0 20px;
+}
+.tenets { list-style: none; padding: 0; margin: 0 0 28px; }
+.tenets li {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: baseline;
+  margin-bottom: 14px;
+  font-family: 'EB Garamond', serif;
+}
+.tenets .tn {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink-red);
+}
+.tenets .tt { font-size: 18px; line-height: 1.5; color: var(--ink); text-wrap: pretty; }
+.about-foot { border-top: 1px solid var(--ink-soft); padding-top: 18px; }
+.about-foot .pair {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 14px;
+  font-family: 'EB Garamond', serif;
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+.about-foot .pair span:first-child {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+
+/* ==================== Contact ==================== */
+.contact-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-top: 40px;
+  justify-items: center;
+}
+.envelope-plate {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640/400;
+  box-shadow: 3px 4px 0 rgba(46,30,16,.2);
+}
+.contact-list {
+  width: 100%;
+  max-width: 640px;
+}
+.contact-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: baseline;
+  gap: 18px;
+  padding: 14px 4px;
+  border-bottom: 1px solid rgba(46,30,16,.25);
+  font-family: 'EB Garamond', serif;
+}
+.contact-row .cl {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: .28em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.contact-row .cv {
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink);
+}
+.contact-foot {
+  margin-top: 20px;
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-wrap: pretty;
+}

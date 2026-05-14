@@ -1,0 +1,458 @@
+/* ==================== engraving / botanical illustration style ====================
+   Inspired by 19th-century natural history plates: aged paper, brown-black ink,
+   cross-hatching and stippling for volume, wobbly hand-drawn strokes.
+*/
+:root {
+  /* paper tones — aged ivory / buttermilk */
+  --paper:        #ece2c8;
+  --paper-warm:   #e3d2a8;
+  --paper-deep:   #c8b488;
+  --paper-fold:   #a18a5a;
+  --paper-shadow: #8a6f3c;
+  /* ink tones — walnut / sepia */
+  --ink:          #2e1e10;
+  --ink-soft:     #4a2f18;
+  --ink-faint:    #6a4a28;
+  /* accent ink — faded red and teal (botanical illustration secondaries) */
+  --ink-red:      #8a2a18;
+  --ink-teal:     #2a5a4a;
+  --ink-gold:     #8a6028;
+  /* lamp glow — still warm, but renders as paper-tint rather than light */
+  --lamp-hue: 38;
+  --lamp-sat: 55%;
+  --lamp-light: 58%;
+  --lamp-intensity: 1;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0806;
+  font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+#root { height: 100%; width: 100%; }
+
+/* ==================== stage ==================== */
+.stage {
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 45%, var(--paper) 0%, var(--paper-warm) 55%, var(--paper-deep) 100%);
+}
+
+/* ==================== paper background ==================== */
+/* foxing (those little brown age-spots), scanlines, and deep vignette */
+.paper-ground {
+  position: absolute;
+  inset: 0;
+  background:
+    /* faint scanline (engraving plate feel) */
+    repeating-linear-gradient(0deg, rgba(46,30,16,.035) 0 1px, transparent 1px 3px),
+    /* foxing spots */
+    radial-gradient(ellipse 3% 2% at 18% 22%, rgba(138,96,40,.18), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 78% 38%, rgba(138,42,24,.15), transparent 60%),
+    radial-gradient(ellipse 4% 3% at 28% 78%, rgba(138,96,40,.18), transparent 60%),
+    radial-gradient(ellipse 3% 2% at 86% 82%, rgba(46,30,16,.14), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 58% 12%, rgba(138,42,24,.12), transparent 60%),
+    /* paper base */
+    radial-gradient(ellipse 90% 70% at 50% 50%, var(--paper) 0%, var(--paper-warm) 60%, var(--paper-deep) 100%);
+  pointer-events: none;
+}
+.paper-ground::before {
+  /* paper fibre noise */
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.10  0 0 0 0.35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: .45;
+}
+.paper-ground::after {
+  /* deep corner vignette, gives the plate depth */
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 55%, transparent 45%, rgba(60,40,18,.35) 85%, rgba(30,18,8,.6) 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* lamp-on: brighten the paper near the lamp, tint a little warmer */
+.stage.on .paper-ground {
+  background:
+    repeating-linear-gradient(0deg, rgba(46,30,16,.035) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse 3% 2% at 18% 22%, rgba(138,96,40,.18), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 78% 38%, rgba(138,42,24,.15), transparent 60%),
+    radial-gradient(ellipse 4% 3% at 28% 78%, rgba(138,96,40,.18), transparent 60%),
+    radial-gradient(ellipse 3% 2% at 86% 82%, rgba(46,30,16,.14), transparent 60%),
+    radial-gradient(ellipse 2% 2% at 58% 12%, rgba(138,42,24,.12), transparent 60%),
+    /* warm halo around lamp */
+    radial-gradient(ellipse 40% 50% at 72% 32%,
+      hsla(var(--lamp-hue), 50%, 72%, calc(.45 * var(--lamp-intensity))) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, var(--paper) 0%, var(--paper-warm) 60%, var(--paper-deep) 100%);
+}
+
+/* global hand-drawn wobble — used on all engraving SVGs */
+.wobble { filter: url(#wobble); }
+
+/* ==================== room scene (push-in composition) ==================== */
+.room-scene {
+  position: absolute; inset: 0;
+  transform-origin: 50% 55%;
+  transition: transform 2.2s cubic-bezier(.5,.02,.25,1), filter 1.6s ease, opacity 1.4s ease;
+  will-change: transform, filter, opacity;
+}
+.room-scene.view-room    { transform: scale(1) translateY(0); filter: blur(0); opacity: 1; }
+.room-scene.view-drawer  { transform: scale(1.28) translateY(-18%); filter: blur(1.5px) brightness(.85); opacity: .85; }
+.room-scene.view-card    { transform: scale(1.6) translateY(-26%); filter: blur(5px) brightness(.75); opacity: .55; }
+@keyframes sceneBlur {
+  0%   { filter: blur(0); }
+  40%  { filter: blur(4px); }
+  70%  { filter: blur(4px); }
+  100% { }
+}
+.room-scene.moving { animation: sceneBlur 2.2s cubic-bezier(.5,.02,.25,1); }
+
+/* ==================== plate title block ==================== */
+.plate-title {
+  position: absolute;
+  top: 22px; left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--ink);
+  pointer-events: none;
+  z-index: 55;
+}
+.plate-title .eyebrow {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .48em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+.plate-title h1 {
+  margin: 0;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: .05em;
+}
+.plate-title .fig {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  letter-spacing: .32em;
+  color: var(--ink-faint);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+.plate-title .rule {
+  width: 220px; height: 1px; background: var(--ink);
+  margin: 10px auto 0; opacity: .6;
+}
+
+/* ==================== lamp ==================== */
+.lamp-holder {
+  position: absolute;
+  right: 14%;
+  top: 8%;
+  width: 260px;
+  height: 520px;
+  z-index: 5;
+  transition: filter 1.4s ease;
+}
+.lamp-holder svg { overflow: visible; display: block; width:100%; height:100%; }
+
+.pull-cord {
+  position: absolute;
+  top: 240px;
+  right: 40px;
+  width: 32px;
+  height: 140px;
+  cursor: grab;
+  touch-action: none;
+  z-index: 6;
+}
+.pull-cord:active { cursor: grabbing; }
+
+/* glow when lamp is on — subtle paper-stain, not radial light */
+.lamp-glow {
+  position: absolute;
+  right: 12%;
+  top: 6%;
+  width: 380px; height: 380px;
+  pointer-events: none;
+  background: radial-gradient(circle,
+    hsla(var(--lamp-hue), 70%, 65%, calc(.28 * var(--lamp-intensity))) 0%,
+    transparent 70%);
+  mix-blend-mode: multiply;
+  filter: blur(30px);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+  z-index: 4;
+}
+.stage.on .lamp-glow { opacity: 1; }
+
+/* ==================== desk objects ==================== */
+.desk-line {
+  /* a horizontal hand-drawn rule for the desk edge */
+  position: absolute;
+  left: 0; right: 0;
+  top: 62%;
+  height: 80px;
+  z-index: 3;
+  pointer-events: none;
+}
+.book, .mug, .pen, .inkwell {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+}
+.book { left: 6%;  top: 62%; width: 260px; height: 70px; }
+.mug  { left: 22%; top: 52%; width: 140px; height: 160px; }
+.pen  { left: 4%;  top: 80%; width: 280px; height: 40px; transform: rotate(6deg); }
+.inkwell { left: 20%; top: 76%; width: 110px; height: 120px; }
+
+/* ==================== closed drawer (in room view) ==================== */
+.drawer-closed {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  width: 620px;
+  height: 140px;
+  z-index: 7;
+  cursor: pointer;
+  transition: transform .3s ease;
+}
+.drawer-closed:hover { transform: translateX(-50%) translateY(-2px); }
+.drawer-closed svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* ==================== drawer overlay (top-down view) ==================== */
+.drawer-overlay {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%) scale(.75);
+  width: min(1100px, 88%);
+  height: min(680px, 84%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transition: transform 1.8s cubic-bezier(.5,.05,.25,1), opacity 1.2s ease;
+  will-change: transform, opacity;
+  perspective: 1400px;
+}
+.drawer-overlay.open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer-overlay.dimmed { filter: brightness(.7) blur(2px); pointer-events: none; }
+
+.drawer-box {
+  position: relative;
+  width: 100%; height: 100%;
+}
+.drawer-box .drawer-svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+
+/* ==================== cards ==================== */
+.cards-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.cards-layer.active { pointer-events: auto; }
+
+.card-slot {
+  position: absolute;
+  width: 280px;
+  height: 400px;
+  transform-style: preserve-3d;
+  transition:
+    transform 1.6s cubic-bezier(.5,.05,.25,1),
+    opacity .6s ease,
+    filter .6s ease;
+  cursor: pointer;
+  will-change: transform, opacity;
+}
+.card-slot .card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1.4s cubic-bezier(.6,0,.3,1);
+}
+.card-slot .face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  overflow: hidden;
+  filter: drop-shadow(0 12px 18px rgba(30,18,8,.35));
+}
+.card-slot .face.back { transform: rotateY(180deg); }
+.card-slot.flipping .card-inner { transform: rotateY(180deg); }
+.card-slot:hover:not(.flying) { z-index: 15; }
+
+/* ==================== hints ==================== */
+.hint {
+  position: absolute;
+  left: 50%; bottom: 4%;
+  transform: translateX(-50%);
+  font-family: 'Special Elite', 'Courier New', monospace;
+  color: var(--ink-faint);
+  font-size: 12px;
+  letter-spacing: .3em;
+  pointer-events: none;
+  text-transform: uppercase;
+  animation: hintBlink 2.2s ease-in-out infinite;
+  z-index: 60;
+  background: rgba(236,226,200,.6);
+  padding: 6px 18px;
+  border: 1px solid rgba(46,30,16,.3);
+}
+@keyframes hintBlink {
+  0%, 100% { opacity: .4; }
+  50% { opacity: 1; }
+}
+
+/* ==================== back buttons ==================== */
+.back-btn, .back-to-room {
+  position: fixed;
+  top: 28px; left: 32px;
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--ink-soft);
+  border-radius: 0;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 rgba(46,30,16,.2);
+  transition: transform .2s, box-shadow .2s;
+}
+.back-btn:hover, .back-to-room:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(46,30,16,.25);
+}
+.back-to-room { z-index: 80; opacity: 0; transition: opacity .6s ease; }
+.back-to-room.show { opacity: 1; }
+
+/* ==================== dust (in scene) ==================== */
+.dust {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.6s ease;
+  z-index: 4;
+}
+.dust.on { opacity: 1; }
+.dust .mote {
+  position: absolute;
+  border-radius: 50%;
+  background: hsla(var(--lamp-hue), 60%, 50%, .55);
+  animation: drift linear infinite;
+  mix-blend-mode: multiply;
+}
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0); opacity: 0; }
+  12%  { opacity: .6; }
+  50%  { opacity: .8; }
+  92%  { opacity: .4; }
+  100% { transform: translate3d(var(--dx,30px), var(--dy,-180px), 0); opacity: 0; }
+}
+
+/* ==================== corner plate ornaments ==================== */
+.corner-orn {
+  position: absolute;
+  width: 80px; height: 80px;
+  pointer-events: none;
+  opacity: .55;
+  z-index: 55;
+}
+.corner-orn.tl { top: 18px; left: 18px; }
+.corner-orn.tr { top: 18px; right: 18px; transform: scaleX(-1); }
+.corner-orn.bl { bottom: 18px; left: 18px; transform: scaleY(-1); }
+.corner-orn.br { bottom: 18px; right: 18px; transform: scale(-1,-1); }
+
+/* page-layer background */
+.page-layer {
+  position: fixed; inset: 0;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .9s ease;
+  z-index: 100;
+  overflow: hidden;
+}
+.page-layer.active { opacity: 1; pointer-events: auto; }
+
+/* ==================== tweaks panel ==================== */
+.tweaks {
+  position: fixed;
+  right: 20px; bottom: 20px;
+  z-index: 200;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink-soft);
+  padding: 18px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  min-width: 260px;
+  box-shadow: 4px 4px 0 rgba(46,30,16,.2);
+}
+.tweaks h4 {
+  margin: 0 0 14px;
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  letter-spacing: .3em;
+  color: var(--ink);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--ink-soft);
+  padding-bottom: 8px;
+}
+.tweaks .row { margin-bottom: 14px; }
+.tweaks .row:last-child { margin-bottom: 0; }
+.tweaks label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ink-soft);
+  font-size: 11px;
+  letter-spacing: .12em;
+}
+.tweaks input[type=range] {
+  width: 100%;
+  accent-color: var(--ink-red);
+}
+.tweaks .swatches {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.tweaks .sw {
+  width: 28px; height: 28px;
+  border-radius: 0;
+  cursor: pointer;
+  border: 2px solid var(--ink-soft);
+  transition: transform .2s, border-color .2s;
+}
+.tweaks .sw:hover { transform: scale(1.1); }
+.tweaks .sw.on { border-color: var(--ink-red); }
+.tweaks .value {
+  font-size: 10px;
+  color: var(--ink-faint);
+  float: right;
+}
