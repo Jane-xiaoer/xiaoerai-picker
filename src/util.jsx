@@ -7,7 +7,19 @@ window._util = {
 // Simple web-audio sfx: two-tap wooden clack for the pull cord, drawer rumble, card whoosh.
 (function() {
   let ctx;
-  const getCtx = () => ctx || (ctx = new (window.AudioContext || window.webkitAudioContext)());
+  const getCtx = () => {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    return ctx;
+  };
+  // also resume on the very first user gesture anywhere on the page (safety net)
+  const armOnce = () => {
+    getCtx();
+    window.removeEventListener('pointerdown', armOnce);
+    window.removeEventListener('keydown', armOnce);
+  };
+  window.addEventListener('pointerdown', armOnce, { once: true });
+  window.addEventListener('keydown', armOnce, { once: true });
   function envBurst({ freq = 800, dur = .04, type = 'triangle', gain = .3, decay = .03, fDecay = 0, delay = 0 }) {
     const c = getCtx();
     const t = c.currentTime + delay;
@@ -36,16 +48,19 @@ window._util = {
   }
   window._sfx = {
     clack() {
-      // high tick + low wooden thunk, double-tap
-      envBurst({ freq: 2200, dur: .015, type: 'square', gain: .08, decay: .02 });
-      envBurst({ freq: 180, dur: .04, type: 'triangle', gain: .22, decay: .08, fDecay: 120 });
-      envBurst({ freq: 2000, dur: .015, type: 'square', gain: .06, decay: .02, delay: .09 });
-      envBurst({ freq: 160, dur: .05, type: 'triangle', gain: .18, decay: .1, fDecay: 100, delay: .09 });
+      // lamp-chain pull: tiny shimmer → crisp metallic click → soft resonance
+      noiseBurst({ dur: .045, gain: .12, filter: 5000, q: 2.2 });
+      envBurst({ freq: 3400, dur: .025, type: 'triangle', gain: .28, decay: .05 });
+      envBurst({ freq: 1900, dur: .04, type: 'sine', gain: .18, decay: .09, fDecay: 1000, delay: .008 });
+      envBurst({ freq: 620, dur: .07, type: 'sine', gain: .1, decay: .15, fDecay: 240, delay: .025 });
     },
     drawer() {
-      noiseBurst({ dur: .9, gain: .12, filter: 600, q: 1.2 });
-      envBurst({ freq: 90, dur: .7, type: 'sine', gain: .15, decay: .2 });
-      envBurst({ freq: 60, dur: .2, type: 'triangle', gain: .25, decay: .3, delay: .85 });
+      // wood-on-wood slide: longer textured rumble, softer stop
+      noiseBurst({ dur: 1.2, gain: .22, filter: 820, q: 1.5 });
+      envBurst({ freq: 115, dur: 1.05, type: 'sine', gain: .2, decay: .35 });
+      envBurst({ freq: 230, dur: .85, type: 'triangle', gain: .07, decay: .3, delay: .05 });
+      noiseBurst({ dur: .18, gain: .12, filter: 1400, q: 1, delay: 1.05 });
+      envBurst({ freq: 75, dur: .15, type: 'sine', gain: .18, decay: .3, delay: 1.05 });
     },
     whoosh() {
       noiseBurst({ dur: .5, gain: .08, filter: 2200, q: .8 });
