@@ -169,5 +169,17 @@
 <script type="text/babel" src="src/pages.jsx"></script>
 <script type="text/babel" src="src/tweaks.jsx"></script>
 <script type="text/babel" src="src/app.jsx"></script>
+<script>
+  // Dev-only cache-buster: when running on localhost, append ?v=<timestamp> to all
+  // type="text/babel" scripts BEFORE Babel scans them on DOMContentLoaded. Prevents
+  // disk-cached jsx from masking edits. No-op in production.
+  (function () {
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return;
+    var t = Date.now();
+    document.querySelectorAll('script[type="text/babel"]').forEach(function (s) {
+      s.src = s.src.split('?')[0] + '?v=' + t;
+    });
+  })();
+</script>
 </body>
 </html>

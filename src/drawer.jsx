@@ -1,7 +1,33 @@
 // drawer.jsx — engraved drawer front (closed) and top-down interior (open)
 function DrawerClosed({ onOpen, disabled }) {
+  const [waking, setWaking] = React.useState(false);
+
+  // When the lamp turns on (disabled flips false), nudge the drawer 4 times in tight
+  // succession — Jane wants the cue to feel *紧凑* and obvious, not casual.
+  React.useEffect(() => {
+    if (disabled) return;
+    let count = 0;
+    let nudgeTimer;
+    let gapTimer;
+    const run = () => {
+      if (count >= 4) return;
+      setWaking(true);
+      nudgeTimer = setTimeout(() => {
+        setWaking(false);
+        count++;
+        gapTimer = setTimeout(run, 350); // short gap → tight rhythm
+      }, 720); // matches drawerNudge animation duration below
+    };
+    const start = setTimeout(run, 600);
+    return () => {
+      clearTimeout(start); clearTimeout(nudgeTimer); clearTimeout(gapTimer);
+      setWaking(false);
+    };
+  }, [disabled]);
+
   return (
-    <div className="drawer-closed" onClick={() => !disabled && onOpen()}>
+    <div className={`drawer-closed ${waking ? 'waking' : ''}`}
+         onClick={() => !disabled && onOpen()}>
       <svg className="drawer-front" viewBox="0 0 620 140">
         <g filter="url(#wobble)">
           {/* panel */}
@@ -44,11 +70,12 @@ function DrawerClosed({ onOpen, disabled }) {
           ))}
         </g>
       </svg>
-      <div className="drawer-callout">
-        <span className="dash"/>
-        <span>Open the Cabinet</span>
-        <span className="dash"/>
-      </div>
+      {!disabled && (
+        <div className="drawer-hint" aria-hidden="true">
+          <span className="drawer-hint-text">拉开抽屉 · open</span>
+          <span className="drawer-hint-arrow">↑</span>
+        </div>
+      )}
     </div>
   );
 }

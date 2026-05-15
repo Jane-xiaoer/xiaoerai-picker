@@ -4,19 +4,27 @@ const { clamp } = window._util;
 function Lamp({ on, onToggle }) {
   const [cordY, setCordY] = React.useState(0);
   const [pulling, setPulling] = React.useState(false);
-  const startRef = React.useRef({ y: 0, cordY: 0 });
+  const [wiggle, setWiggle] = React.useState(0); // gentle attract-animation amplitude when lamp off
+  const startRef = React.useRef({ y: 0, cordY: 0, t: 0, moved: false });
 
   React.useEffect(() => {
     const onMove = (e) => {
       if (!pulling) return;
       const dy = e.clientY - startRef.current.y;
-      setCordY(clamp(startRef.current.cordY + dy / 90, 0, 1));
+      if (Math.abs(dy) > 4) startRef.current.moved = true;
+      // more responsive: dy/55 means a small drag already lights the lamp
+      setCordY(clamp(startRef.current.cordY + dy / 55, 0, 1));
     };
-    const onUp = () => {
+    const onUp = (e) => {
       if (!pulling) return;
       setPulling(false);
-      if (cordY > 0.6) onToggle();
-      let from = cordY;
+      const dt = performance.now() - startRef.current.t;
+      const moved = startRef.current.moved;
+      // tap-to-toggle: a short interaction with little movement counts as a click
+      const isTap = !moved && dt < 350;
+      // lowered threshold: 40% pull already toggles
+      if (isTap || cordY > 0.4) onToggle();
+      let from = isTap ? 0.55 : cordY; // tap shows a quick yank-down animation
       const start = performance.now();
       const a = (t) => {
         const k = Math.min(1, (t - start) / 320);
@@ -36,13 +44,44 @@ function Lamp({ on, onToggle }) {
     };
   }, [pulling, cordY, onToggle]);
 
+  // Attract animation: while lamp is off and user hasn't interacted, gently wiggle the cord
+  // every 4s, up to 3 times — enough to draw the eye, not enough to feel busy.
+  React.useEffect(() => {
+    if (on || pulling) return;
+    let count = 0;
+    let raf;
+    const tick = () => {
+      if (count >= 3) return;
+      count++;
+      const start = performance.now();
+      const dur = 900;
+      const step = (t) => {
+        const k = Math.min(1, (t - start) / dur);
+        // damped sine: amplitude ~0.18 → 0
+        const amp = 0.18 * (1 - k);
+        setWiggle(Math.sin(k * Math.PI * 4) * amp);
+        if (k < 1) raf = requestAnimationFrame(step);
+        else { setWiggle(0); setTimeout(tick, 2000); }
+      };
+      raf = requestAnimationFrame(step);
+    };
+    const t = setTimeout(tick, 2000);
+    return () => { clearTimeout(t); cancelAnimationFrame(raf); setWiggle(0); };
+  }, [on, pulling]);
+
   const onDown = (e) => {
     e.preventDefault();
-    startRef.current = { y: e.clientY, cordY };
+    // Lock the pointer to this element so move events keep firing even after
+    // the cursor leaves the (small) hit area — without this, drags drop the moment
+    // the user moves more than a few px below the original press point.
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
+    startRef.current = { y: e.clientY, cordY, t: performance.now(), moved: false };
     setPulling(true);
   };
 
-  const pull = cordY * 80;
+  // visual pull = active drag + idle wiggle (only when off & not pulling).
+  // Clamp to ≥0 so the cord never floats upward (un-physical).
+  const pull = Math.max(0, (cordY + (on || pulling ? 0 : wiggle))) * 80;
   const ink = '#2e1e10';
 
   return (
@@ -128,7 +167,14 @@ function Lamp({ on, onToggle }) {
       </svg>
       <div className="pull-cord"
            onPointerDown={onDown}
-           style={{ top: 240 + pull * .9 }}/>
+           aria-label="拉一下点亮台灯 · pull to light"
+           role="button"/>
+      {!on && (
+        <div className="cord-hint" aria-hidden="true">
+          <span className="cord-hint-arrow">←</span>
+          <span className="cord-hint-text">拉开关 · pull</span>
+        </div>
+      )}
     </div>
   );
 }

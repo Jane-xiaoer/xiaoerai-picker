@@ -216,15 +216,62 @@ html, body {
 
 .pull-cord {
   position: absolute;
-  top: 240px;
-  right: 40px;
-  width: 32px;
-  height: 140px;
+  top: 220px;
+  right: 24px;
+  width: 64px;
+  height: 200px;
   cursor: grab;
   touch-action: none;
   z-index: 6;
 }
 .pull-cord:active { cursor: grabbing; }
+.pull-cord:hover ~ .cord-hint { opacity: 0; }
+
+/* Shared style: cord-hint and drawer-hint use identical typography & frame.
+   cord-hint sits to the right of the cord, arrow points LEFT (←) at the cord.
+   drawer-hint sits below the closed drawer, arrow points UP (↑) at the drawer. */
+.cord-hint, .drawer-hint {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink-faint, rgba(46,30,16,.7));
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 7;
+  animation: cordHintFloat 2.4s ease-in-out infinite;
+}
+.cord-hint {
+  top: 226px;             /* level with the cord tassel bottom in lamp-holder coords */
+  right: -150px;          /* outside the lamp-holder, to the right of the cord */
+}
+.cord-hint-text, .drawer-hint-text {
+  background: rgba(236,226,200,.7);
+  padding: 3px 10px;
+  border: 1px solid rgba(46,30,16,.25);
+}
+.cord-hint-arrow, .drawer-hint-arrow {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1;
+}
+.cord-hint-arrow   { animation: hintArrowLeft  1.6s ease-in-out infinite; }
+.drawer-hint-arrow { animation: hintArrowUp    1.6s ease-in-out infinite; }
+@keyframes cordHintFloat {
+  0%, 100% { opacity: .6; }
+  50%      { opacity: 1; }
+}
+@keyframes hintArrowLeft {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(-5px); }
+}
+@keyframes hintArrowUp {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
 
 /* glow layer no longer needed — halo is driven by .paper-ground::after */
 .lamp-glow { display: none; }
@@ -268,23 +315,24 @@ html, body {
 .drawer-closed:hover { transform: translateX(-50%) translateY(-2px); }
 .drawer-closed svg.drawer-front { width: 100%; height: 150px; display: block; overflow: visible; }
 
-.drawer-callout {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: 'Special Elite', monospace;
-  font-size: 11px;
-  letter-spacing: .38em;
-  color: var(--ink);
-  text-transform: uppercase;
-  opacity: .85;
+/* drawer-hint sits centered just below the closed drawer, horizontal layout:
+   "拉开抽屉 · open ↑" with the arrow pointing up at the drawer. */
+.drawer-hint {
+  position: relative;     /* override absolute from shared rule — keep it in flex flow */
+  margin-top: 14px;
 }
-.drawer-callout .dash {
-  display: block;
-  width: 38px; height: 1px;
-  background: var(--ink);
-  opacity: .55;
+
+/* "Wake" nudge: when the lamp turns on, the drawer makes a tiny lift — *微微* —
+   so the viewer notices it as the next interactive thing without it feeling busy. */
+.drawer-closed.waking {
+  animation: drawerNudge .72s ease;
+}
+@keyframes drawerNudge {
+  0%   { transform: translateX(-50%) translateY(0); }
+  35%  { transform: translateX(-50%) translateY(-3px); }
+  65%  { transform: translateX(-50%) translateY(0); }
+  85%  { transform: translateX(-50%) translateY(-1.5px); }
+  100% { transform: translateX(-50%) translateY(0); }
 }
 
 /* ==================== drawer overlay (top-down view) ==================== */
@@ -355,29 +403,6 @@ html, body {
 .card-slot .face.back { transform: rotateY(180deg); }
 .card-slot.flipping .card-inner { transform: rotateY(180deg); }
 .card-slot:hover:not(.flying) { z-index: 15; }
-
-/* ==================== hints ==================== */
-.hint {
-  position: absolute;
-  right: 9%;
-  top: calc(62% + 68px); /* desk-skirt area, right side under the lamp — close to the desk front edge */
-  font-family: 'Special Elite', 'Courier New', monospace;
-  color: var(--ink-faint);
-  font-size: 12px;
-  letter-spacing: .3em;
-  pointer-events: none;
-  text-transform: uppercase;
-  animation: hintBlink 2.2s ease-in-out infinite;
-  z-index: 60;
-  background: rgba(236,226,200,.6);
-  padding: 6px 18px;
-  border: 1px solid rgba(46,30,16,.3);
-  white-space: nowrap;
-}
-@keyframes hintBlink {
-  0%, 100% { opacity: .4; }
-  50% { opacity: 1; }
-}
 
 /* ==================== back buttons ==================== */
 .back-btn, .back-to-room {

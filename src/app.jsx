@@ -105,11 +105,6 @@ function App() {
           <Cards open={view === 'drawer'} flyingId={flyingId} onPick={pickCard}/>
         </DrawerOverlay>
 
-        {/* Hint text */}
-        {!lampOn && view === 'room' && (
-          <div className="hint">— Pull the cord —</div>
-        )}
-
         {/* Back to room from drawer */}
         <button
           className={`back-to-room ${view === 'drawer' ? 'show' : ''}`}
