@@ -1,16 +1,27 @@
-// cards.jsx — four engraved folio cards in the drawer, with flip+fly-to-center animation
+// cards.jsx — engraved folio cards in the drawer, with flip+fly-to-center animation
 const CARDS = [
   { id: 'arsenal',  title: '弹药库', subtitle: 'Arsenal · 350+ Tools',   roman: 'I',   symbol: 'anvil',    href: 'https://tools.xiaoerai.xyz' },
   { id: 'zoetrope', title: '走马灯', subtitle: 'Zoetrope · AI Videos',   roman: 'II',  symbol: 'scroll',   href: 'https://video.xiaoerai.xyz' },
   { id: 'curio',    title: '百物匣', subtitle: 'Curio Box · Artifacts',  roman: 'III', symbol: 'envelope', href: 'https://store.xiaoerai.xyz' },
+  { id: 'workbox',  title: '鲁班箱', subtitle: 'Luban Box · Toolkit',    roman: 'IV',  symbol: 'lubanbox', href: 'https://workbox.xiaoerai.xyz' },
 ];
 
-// Layout: 3 cards in a fan across the drawer (percent of overlay)
-const LAYOUT = [
-  { x: 22, y: 50, rot: -3.5 },
-  { x: 50, y: 46, rot:  1.5 },
-  { x: 78, y: 52, rot:  4.5 },
-];
+// Layout: cards in a fan across the drawer (percent of overlay).
+// Positions scale to the card count so 3- and 4-card decks both stay centered.
+const LAYOUTS = {
+  3: [
+    { x: 22, y: 50, rot: -3.5 },
+    { x: 50, y: 46, rot:  1.5 },
+    { x: 78, y: 52, rot:  4.5 },
+  ],
+  4: [
+    { x: 13, y: 53, rot: -7 },
+    { x: 38, y: 47, rot: -2.5 },
+    { x: 62, y: 47, rot:  2.5 },
+    { x: 87, y: 53, rot:  7 },
+  ],
+};
+const LAYOUT = LAYOUTS[CARDS.length] || LAYOUTS[4];
 
 function CardSymbol({ symbol }) {
   // engraved central emblem for the card front
@@ -65,6 +76,34 @@ function CardSymbol({ symbol }) {
       {/* wax seal */}
       <circle cx="60" cy="78" r="8" fill={ink} stroke={ink} strokeWidth="1"/>
       <path d="M 56 74 L 64 82 M 64 74 L 56 82" stroke="#ece2c8" strokeWidth="1"/>
+    </g>
+  );
+  if (symbol === 'lubanbox') return (
+    // an engraved carpenter's chest, 3/4 view, with a Luban-lock (burr puzzle) medallion
+    <g filter="url(#wobble)" stroke={ink} fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {/* lid (top face, receding back-right) */}
+      <path d="M 26 44 L 42 32 L 96 32 L 80 44 Z" strokeWidth="1.4" fill="url(#hatch2)"/>
+      {/* right side face */}
+      <path d="M 80 44 L 96 32 L 96 78 L 80 90 Z" strokeWidth="1.4" fill="url(#hatch1)"/>
+      {/* front face */}
+      <rect x="26" y="44" width="54" height="46" strokeWidth="1.6" fill="#ece2c8"/>
+      <rect x="28" y="46" width="50" height="42" fill="url(#hatch1)" opacity=".28"/>
+      {/* lid lip across the front */}
+      <line x1="26" y1="52" x2="80" y2="52" strokeWidth="1"/>
+      {/* dovetail finger-joints down the left corner */}
+      <path d="M 26 58 L 31 58 M 26 66 L 31 66 M 26 74 L 31 74 M 26 82 L 31 82" strokeWidth=".8"/>
+      {/* carry handle on the lid */}
+      <path d="M 50 32 Q 61 23 72 32" strokeWidth="1.3"/>
+      {/* Luban-lock medallion, centered on the front face */}
+      <g transform="translate(53 70)">
+        <circle r="15" strokeWidth="1" fill="#ece2c8"/>
+        <circle r="12" strokeWidth=".5" opacity=".55"/>
+        {/* interlocking burr cross */}
+        <rect x="-11" y="-4" width="22" height="8" strokeWidth="1.1"/>
+        <rect x="-4" y="-11" width="8" height="22" strokeWidth="1.1" fill="#ece2c8"/>
+        <line x1="-4" y1="-4" x2="4" y2="-4" strokeWidth=".7"/>
+        <line x1="-4" y1="4" x2="4" y2="4" strokeWidth=".7"/>
+      </g>
     </g>
   );
   return null;
