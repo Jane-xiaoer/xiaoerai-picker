@@ -35,6 +35,7 @@
     cordHint:    { zh: '拉开关',         en: 'pull' },
     cordAria:    { zh: '拉一下点亮台灯 · pull to light', en: 'Pull to light the lamp' },
     drawerHint:  { zh: '拉开抽屉',       en: 'open the drawer' },
+    worldMap:    { zh: '关于我 · 小耳的世界', en: 'About · The World of Xiaoer' },
   };
 
   function LangToggle() {
@@ -47,4 +48,17 @@
     );
   }
   window.LangToggle = LangToggle;
+
+  // entry into the whole-site map at /me — an engraved compass chip, top-right
+  function WorldMapLink() {
+    const l = window.useLang();
+    return (
+      <a className="worldmap-link" href="/me" title={window.T.worldMap[l]}>
+        <span className="wm-compass" aria-hidden="true">✦</span>
+        <span className="wm-text">{window.T.worldMap[l]}</span>
+        <span className="wm-arrow" aria-hidden="true">↗</span>
+      </a>
+    );
+  }
+  window.WorldMapLink = WorldMapLink;
 })();

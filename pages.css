@@ -280,3 +280,18 @@
 .lang-toggle b:first-child{border-right:1.4px solid #2e1e10}
 .lang-toggle b.on{background:#2e1e10;color:#f2ead4}
 .lang-toggle b:not(.on):hover{background:rgba(46,30,16,.1)}
+
+/* ── entry to the whole-site map at /me — engraved compass chip, top-right ── */
+.worldmap-link{position:fixed;top:13px;right:16px;z-index:120;display:flex;align-items:center;gap:7px;
+  padding:5px 15px;border:1.6px solid #2e1e10;border-radius:20px;background:rgba(236,226,200,.92);
+  box-shadow:0 2px 9px rgba(60,40,15,.22);text-decoration:none;color:#3a2612;cursor:pointer;
+  font-family:'Cormorant Garamond','Noto Serif SC',serif;font-style:italic;font-weight:600;
+  font-size:15px;letter-spacing:.01em;backdrop-filter:blur(1px);white-space:nowrap;
+  transition:background .25s ease,box-shadow .25s ease,transform .25s ease}
+.worldmap-link:hover{background:#f4d68a;box-shadow:0 4px 15px rgba(138,96,40,.42);transform:translateY(-1px)}
+.worldmap-link .wm-compass{font-size:12px;opacity:.72}
+.worldmap-link .wm-arrow{font-family:'Special Elite',monospace;font-size:12px;opacity:.6}
+@media (max-width:640px){
+  .worldmap-link{font-size:13px;padding:4px 12px}
+  .worldmap-link .wm-text{max-width:40vw;overflow:hidden;text-overflow:ellipsis}
+}

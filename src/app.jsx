@@ -1,6 +1,6 @@
 // app.jsx — root app; orchestrates scene states, lamp, drawer, cards, pages, tweaks
 const { Lamp, DeskLine, Book, Mug, Pen, Inkwell, PlateTitle, CornerOrnaments, Dust,
-        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle } = window;
+        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, WorldMapLink } = window;
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
   "hue": 38,
@@ -84,6 +84,7 @@ function App() {
   return (
     <>
       <LangToggle/>
+      <WorldMapLink/>
       <div className={`stage ${lampOn ? 'on' : ''}`}>
         <div className="paper-ground"/>
         <div className={`lamp-glow`}/>
