@@ -1,6 +1,6 @@
 // app.jsx — root app; orchestrates scene states, lamp, drawer, cards, pages, tweaks
 const { Lamp, DeskLine, Book, Mug, Pen, Inkwell, PlateTitle, CornerOrnaments, Dust,
-        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, Globe, StoryOverlay } = window;
+        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, Globe, StoryOverlay, HeroDesk } = window;
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
   "hue": 38,
@@ -97,8 +97,7 @@ function App() {
         <div className={`room-scene ${sceneViewCls} ${sceneMoving ? 'moving' : ''}`}>
           <DeskLine/>
           <Book onOpen={() => setStoryOpen(true)}/>
-          <Mug/>
-          <Globe onOpen={goToMap}/>
+          <Mug onOpen={goToMap}/>
           <Pen/>
           <Inkwell/>
           <Lamp on={lampOn} onToggle={toggleLamp}/>
@@ -111,7 +110,6 @@ function App() {
           <Cards open={view === 'drawer'} flyingId={flyingId} onPick={pickCard}/>
         </DrawerOverlay>
 
-        {/* Back to room from drawer */}
         <button
           className={`back-to-room ${view === 'drawer' ? 'show' : ''}`}
           onClick={closeDrawer}>{window.T.backToDesk[lang]}</button>

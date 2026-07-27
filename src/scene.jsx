@@ -54,9 +54,17 @@ function Book({ onOpen }) {
   );
 }
 
-function Mug() {
+function Mug({ onOpen }) {
+  const lang = window.useLang();
   return (
-    <svg className="mug" viewBox="0 0 140 160">
+    <div className="mug mug-door" onClick={onOpen} role="button" tabIndex={0}
+         title={window.T.worldMap[lang]} aria-label={window.T.worldMap[lang]}
+         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}>
+      <div className="mug-cap">
+        <span className="gc-eyebrow">{window.T.worldMapEyebrow[lang]}</span>
+        <span className="gc-name">{window.T.worldMapName[lang]} <span className="gc-arrow">↗</span></span>
+      </div>
+      <svg className="mug-svg" viewBox="0 0 140 160">
       <g filter="url(#wobble)">
         {/* handle */}
         <path d="M 100 62 Q 130 64 130 96 Q 130 120 102 120"
@@ -83,7 +91,8 @@ function Mug() {
         <path d="M 60 44 Q 55 30 62 20 Q 68 8 58 -4"
               fill="none" stroke="#2e1e10" strokeWidth="1" strokeLinecap="round" opacity=".7"/>
       </g>
-    </svg>
+      </svg>
+    </div>
   );
 }
 
@@ -255,8 +264,51 @@ function Globe({ onOpen }) {
   );
 }
 
+// HeroDesk — the rendered engraving desk (raster hero) + 2.5D parallax + ambient life.
+// Replaces the old thin-line SVG desk. Two glowing hotspots: 我的故事 / 小耳的世界.
+function HeroDesk({ onStory, onWorld }) {
+  const lang = window.useLang();
+  const T = window.T;
+  const wrapRef = React.useRef(null);
+  React.useEffect(() => {
+    const onMove = (e) => {
+      const w = wrapRef.current; if (!w) return;
+      const tx = (e.clientX / window.innerWidth - .5), ty = (e.clientY / window.innerHeight - .5);
+      w.style.transform =
+        `perspective(1500px) rotateY(${tx * 2.4}deg) rotateX(${-ty * 1.7}deg) scale(1.07)`;
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+  const Hot = ({ cls, x, y, eyebrow, name, onClick, aria }) => (
+    <button className={`hotspot ${cls}`} style={{ left: x, top: y }} onClick={onClick} aria-label={aria}>
+      <span className="hs-dot" aria-hidden="true"/>
+      <span className="hs-cap">
+        <span className="gc-eyebrow">{eyebrow}</span>
+        <span className="gc-name">{name} <span className="gc-arrow">↗</span></span>
+      </span>
+    </button>
+  );
+  return (
+    <div className="hero-desk">
+      <div className="hero-wrap" ref={wrapRef}>
+        <img className="hero-img" src="maps/desk-A.jpg" alt=""/>
+        <div className="hero-lampglow" aria-hidden="true"/>
+        <div className="hero-vig" aria-hidden="true"/>
+        <Hot cls="hs-story" x="27%" y="72%"
+             eyebrow={T.storyEyebrow[lang]} name={T.story[lang]}
+             onClick={onStory} aria={T.story[lang]}/>
+        <Hot cls="hs-world" x="63%" y="46%"
+             eyebrow={T.worldMapEyebrow[lang]} name={T.worldMapName[lang]}
+             onClick={onWorld} aria={T.worldMap[lang]}/>
+      </div>
+    </div>
+  );
+}
+
 window.DeskLine = DeskLine;
 window.Globe = Globe;
+window.HeroDesk = HeroDesk;
 window.Book = Book;
 window.Mug = Mug;
 window.Pen = Pen;
