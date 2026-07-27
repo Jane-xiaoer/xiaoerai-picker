@@ -96,6 +96,7 @@ function App() {
         <div className={`room-scene ${sceneViewCls} ${sceneMoving ? 'moving' : ''}`}>
           <DeskLine/>
           <Book onOpen={goToMap}/>
+          <Mug/>
           <Pen/>
           <Inkwell/>
           <Lamp on={lampOn} onToggle={toggleLamp}/>

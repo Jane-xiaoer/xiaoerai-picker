@@ -54,16 +54,9 @@ function Book({ onOpen }) {
   );
 }
 
-function Mug({ onOpen }) {
-  const lang = window.useLang();
+function Mug() {
   return (
-    <div className="mug mug-door" onClick={onOpen} role="button" tabIndex={0}
-         title={window.T.worldMap[lang]} aria-label={window.T.worldMap[lang]}
-         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}>
-      <div className="mug-cap">
-        <span className="gc-eyebrow">{window.T.worldMapEyebrow[lang]}</span>
-        <span className="gc-name">{window.T.worldMapName[lang]} <span className="gc-arrow">↗</span></span>
-      </div>
+    <div className="mug" aria-hidden="true">
       <svg className="mug-svg" viewBox="0 0 140 160">
       <g filter="url(#wobble)">
         {/* handle */}
@@ -172,7 +165,6 @@ function PlateTitle({ lampOn, drawerOpen }) {
         <span className="orn-rule with-caps"/>
       </div>
       <div className="fig">{figEn} · {stateEn}</div>
-      <div className="fig fig-zh">{figZh} · {stateZh}</div>
     </div>
   );
 }
