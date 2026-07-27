@@ -92,51 +92,50 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 
 <div id="stage">
   <div class="wrap" id="wrap">
-    <img class="base" src="maps/feat-A.jpg" alt=""><!-- clean base; island stamps discarded -->
+    <img class="base" src="maps/world-map.jpg" alt=""><!-- light hand-drawn map (mapD), matches the desk hand -->
     <div class="vig"></div>
     <div class="layer" id="layer"></div>
   </div>
 </div>
 <div class="help" id="help"></div>
-<div class="credit">CONCEPT · SIMPLE MAP · 信息优先 v1</div>
 
 <script>
 // x,y in % of feat-A map. Every label anchored to a concrete drawn feature (town/tower-peak/island/castle/lighthouse).
 // Fully bilingual: zh/en = name, sub/subEn = one-line description. cat=accent; big=中央京城; mid=独立地标; sm=社媒.
 const HEADS=[
- {x:16,y:11,z:'奇 物 录 · 作 品 集',zEn:'The Folio · Works',   e:'THE FOLIO',  url:'https://xiaoerai.xyz'},
- {x:82,y:8, z:'馆 藏 · 七 个 馆',    zEn:'The Halls · Seven',   e:'THE HALLS',  url:'https://xiaoercamera.xyz'},
- {x:48,y:79,z:'社 媒 群 岛',        zEn:'Social Isles',        e:'THE ISLES'},
- {x:62,y:53,z:'联 系 港 湾',        zEn:'The Harbour',         e:'THE HARBOUR'},
+ {x:15,y:8, z:'奇 物 录 · 作 品 集',zEn:'The Folio · Works',   e:'THE FOLIO',  url:'https://xiaoerai.xyz'},
+ {x:85,y:8, z:'馆 藏 · 七 个 馆',    zEn:'The Halls · Seven',   e:'THE HALLS',  url:'https://xiaoercamera.xyz'},
+ {x:31,y:79,z:'社 媒 群 岛',        zEn:'Social Isles',        e:'THE ISLES'},
+ {x:54,y:58,z:'联 系 港 湾',        zEn:'The Harbour',         e:'THE HARBOUR'},
 ];
 const P=[
  // 中央城堡岛 = 关于我
- {x:48,y:30,cat:'about',big:1,zh:'关于我',en:'About Me',sub:'AI 艺术家 · AI Builder · 创作者',subEn:'AI Artist · AI Builder · Creator',url:'https://tools.xiaoerai.xyz/me'},
- // 北海独岛 = Omia / 西南独岛 = 艺术站
- {x:51,y:16,cat:'about',mid:1,zh:'Omia',en:'Omia',sub:'清爽的万能阅览器 · 产品',subEn:'Open Anything · a clean universal reader',url:'https://xiaoeromia.com'},
- {x:29,y:77,cat:'about',mid:1,zh:'艺术站',en:'Art Studio',sub:'AI 艺术 · 参展 · 作品集',subEn:'AI art · exhibitions · portfolio',url:'https://xiaoer-art.com'},
+ {x:50,y:36,cat:'about',big:1,zh:'关于我',en:'About Me',sub:'AI 艺术家 · AI Builder · 创作者',subEn:'AI Artist · AI Builder · Creator',url:'https://tools.xiaoerai.xyz/me'},
+ // 两座独立小岛 = Omia(上左) / 艺术站(下左)
+ {x:23,y:30,cat:'about',mid:1,zh:'Omia',en:'Omia',sub:'清爽的万能阅览器 · 产品',subEn:'Open Anything · a clean universal reader',url:'https://xiaoeromia.com'},
+ {x:17,y:66,cat:'about',mid:1,zh:'艺术站',en:'Art Studio',sub:'AI 艺术 · 参展 · 作品集',subEn:'AI art · exhibitions · portfolio',url:'https://xiaoer-art.com'},
  // 西境大陆 · 4 镇
- {x:13,y:25,cat:'work',zh:'弹药库',en:'The Arsenal',sub:'350+ 自研工具墙',subEn:'350+ self-built tools',url:'https://tools.xiaoerai.xyz'},
- {x:29,y:24,cat:'work',zh:'走马灯',en:'The Zoetrope',sub:'AI 视频 · 广告作品',subEn:'AI video · ad work',url:'https://video.xiaoerai.xyz'},
- {x:14,y:46,cat:'work',zh:'百物匣',en:'The Curio Box',sub:'衍生品周边小店',subEn:'merch & goods shop',url:'https://store.xiaoerai.xyz'},
- {x:30,y:43,cat:'work',zh:'鲁班箱',en:'The Workbox',sub:'开源工具 · 点格子看',subEn:'open-source tools',url:'https://workbox.xiaoerai.xyz'},
- // 东境山脉 · 7 座塔峰(左右两列拉开,不挤不叠)
- {x:70,y:27,cat:'museum',zh:'音乐馆',en:'Music Gallery',sub:'会画画的音乐播放器',subEn:'a music player that paints',url:'https://fm.xiaoercamera.xyz'},
- {x:85,y:16,cat:'museum',zh:'相机馆',en:'Camera Gallery',sub:'相机博物馆交互',subEn:'interactive camera museum',url:'https://camera.xiaoercamera.xyz'},
- {x:69,y:44,cat:'museum',zh:'城市馆',en:'City Gallery',sub:'3D 城市漫游',subEn:'a 3D city to roam',url:'https://city.xiaoercamera.xyz'},
- {x:80,y:56,cat:'museum',zh:'跳舞馆',en:'Dance Gallery',sub:'跳舞 · 星空视觉',subEn:'dance · starfield visuals',url:'https://dance.xiaoercamera.xyz'},
- {x:88,y:31,cat:'museum',zh:'居家馆',en:'Home Gallery',sub:'居家艺术展交互',subEn:'interactive home-art show',url:'https://home.xiaoercamera.xyz'},
- {x:89,y:62,cat:'museum',zh:'弹珠馆',en:'Marble Gallery',sub:'弹珠物理 · Bits&Poetry',subEn:'marble physics · Bits & Poetry',url:'https://marbles.xiaoercamera.xyz'},
- {x:87,y:47,cat:'museum',zh:'肖像馆',en:'Portrait Gallery',sub:'AI 大牌肖像生成',subEn:'AI star-portrait maker',url:'https://portrait.xiaoercamera.xyz'},
+ {x:14,y:17,cat:'work',zh:'弹药库',en:'The Arsenal',sub:'350+ 自研工具墙',subEn:'350+ self-built tools',url:'https://tools.xiaoerai.xyz'},
+ {x:29,y:15,cat:'work',zh:'走马灯',en:'The Zoetrope',sub:'AI 视频 · 广告作品',subEn:'AI video · ad work',url:'https://video.xiaoerai.xyz'},
+ {x:9, y:39,cat:'work',zh:'百物匣',en:'The Curio Box',sub:'衍生品周边小店',subEn:'merch & goods shop',url:'https://store.xiaoerai.xyz'},
+ {x:21,y:47,cat:'work',zh:'鲁班箱',en:'The Workbox',sub:'开源工具 · 点格子看',subEn:'open-source tools',url:'https://workbox.xiaoerai.xyz'},
+ // 东境山脉 · 7 座峰(沿山脊上下拉开)
+ {x:87,y:14,cat:'museum',zh:'相机馆',en:'Camera Gallery',sub:'相机博物馆交互',subEn:'interactive camera museum',url:'https://camera.xiaoercamera.xyz'},
+ {x:77,y:24,cat:'museum',zh:'音乐馆',en:'Music Gallery',sub:'会画画的音乐播放器',subEn:'a music player that paints',url:'https://fm.xiaoercamera.xyz'},
+ {x:93,y:29,cat:'museum',zh:'居家馆',en:'Home Gallery',sub:'居家艺术展交互',subEn:'interactive home-art show',url:'https://home.xiaoercamera.xyz'},
+ {x:83,y:38,cat:'museum',zh:'城市馆',en:'City Gallery',sub:'3D 城市漫游',subEn:'a 3D city to roam',url:'https://city.xiaoercamera.xyz'},
+ {x:92,y:47,cat:'museum',zh:'肖像馆',en:'Portrait Gallery',sub:'AI 大牌肖像生成',subEn:'AI star-portrait maker',url:'https://portrait.xiaoercamera.xyz'},
+ {x:79,y:51,cat:'museum',zh:'跳舞馆',en:'Dance Gallery',sub:'跳舞 · 星空视觉',subEn:'dance · starfield visuals',url:'https://dance.xiaoercamera.xyz'},
+ {x:88,y:61,cat:'museum',zh:'弹珠馆',en:'Marble Gallery',sub:'弹珠物理 · Bits&Poetry',subEn:'marble physics · Bits & Poetry',url:'https://marbles.xiaoercamera.xyz'},
  // 中部灯塔港湾 · 联系(2)
- {x:58,y:64,cat:'contact',zh:'微信',en:'WeChat',sub:'xiaoer-zhan · 加我私聊',subEn:'xiaoer-zhan · say hi',url:null},
- {x:68,y:64,cat:'contact',zh:'邮箱',en:'Email',sub:'合作 · 商务',subEn:'work · collaboration',url:'mailto:xiaoerzhan@gmail.com'},
- // 南海群岛 · 社媒(5)
- {x:40,y:86,cat:'account',sm:1,zh:'X',en:'X',sub:'技术圈主阵地',subEn:'home base for tech',url:'https://x.com/xiaoerzhan'},
- {x:50,y:88,cat:'account',sm:1,zh:'小红书',en:'RED',sub:'大众 · 艺术向内容',subEn:'art & lifestyle',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
- {x:60,y:85,cat:'account',sm:1,zh:'公众号',en:'WeChat Blog',sub:'长文深度主阵地',subEn:'long-form essays',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
- {x:55,y:93,cat:'account',sm:1,zh:'B站',en:'Bilibili',sub:'视频 · 知识',subEn:'video · knowledge',url:'https://space.bilibili.com/18947646'},
- {x:45,y:58,cat:'account',sm:1,zh:'GitHub',en:'GitHub',sub:'开源作品 · 此处有龙',subEn:'open source · here be dragons',url:'https://github.com/Jane-xiaoer'},
+ {x:47,y:66,cat:'contact',zh:'微信',en:'WeChat',sub:'xiaoer-zhan · 加我私聊',subEn:'xiaoer-zhan · say hi',url:null},
+ {x:60,y:67,cat:'contact',zh:'邮箱',en:'Email',sub:'合作 · 商务',subEn:'work · collaboration',url:'mailto:xiaoerzhan@gmail.com'},
+ // 底部群岛 · 社媒(4)+ GitHub 落海(此处有龙)
+ {x:24,y:90,cat:'account',sm:1,zh:'X',en:'X',sub:'技术圈主阵地',subEn:'home base for tech',url:'https://x.com/xiaoerzhan'},
+ {x:31,y:86,cat:'account',sm:1,zh:'小红书',en:'RED',sub:'大众 · 艺术向内容',subEn:'art & lifestyle',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
+ {x:40,y:88,cat:'account',sm:1,zh:'公众号',en:'WeChat Blog',sub:'长文深度主阵地',subEn:'long-form essays',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
+ {x:33,y:93,cat:'account',sm:1,zh:'B站',en:'Bilibili',sub:'视频 · 知识',subEn:'video · knowledge',url:'https://space.bilibili.com/18947646'},
+ {x:64,y:33,cat:'account',sm:1,zh:'GitHub',en:'GitHub',sub:'开源作品 · 此处有龙',subEn:'open source · here be dragons',url:'https://github.com/Jane-xiaoer'},
 ];
 
 const T={
@@ -156,7 +155,7 @@ function build(){
   const t=T[LANG], en=(LANG==='en');
   // world title
   const wt=document.createElement('div');
-  wt.className='worldtitle'+(en?' en':'');wt.style.left='85%';wt.style.top='83.5%';
+  wt.className='worldtitle'+(en?' en':'');wt.style.left='82.5%';wt.style.top='88.5%';
   wt.innerHTML='<div class="z">'+t.world+'</div><div class="e">'+t.worldSub+'</div>';
   layer.appendChild(wt);
   // region headers
