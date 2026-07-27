@@ -68,6 +68,13 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 .langtoggle b{min-width:40px;height:26px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;
   font-weight:400;line-height:1;color:var(--soft);transition:background .25s ease,color .25s ease;user-select:none}
 .langtoggle b:first-child{border-right:1.4px solid var(--ink)}
+/* 返回主页 —— 纯手写体墨字 + 箭头,不套方块 */
+.homelink{position:fixed;left:118px;top:12px;z-index:9;text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+  font-family:'Cormorant Garamond','Noto Serif SC',serif;font-style:italic;font-weight:600;font-size:15px;
+  color:var(--soft);letter-spacing:.02em;text-shadow:0 0 6px var(--paper),0 0 3px var(--paper),0 1px 1px var(--paper);
+  transition:color .25s ease,transform .25s ease}
+.homelink .ar{font-family:'Special Elite',monospace;font-style:normal;font-size:14px}
+.homelink:hover{color:var(--red);transform:translateX(-2px)}
 .langtoggle b.on{background:var(--ink);color:var(--paper)}
 .langtoggle b:not(.on):hover{background:rgba(46,30,16,.1)}
 
@@ -89,6 +96,7 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 <div class="langtoggle" id="langtoggle" title="中文 / English">
   <b data-lang="zh">中</b><b data-lang="en">EN</b>
 </div>
+<a class="homelink" id="homelink" href="/" title="返回主页 / Home"><span class="ar">←</span><span class="tx"></span></a>
 
 <div id="stage">
   <div class="wrap" id="wrap">
@@ -139,8 +147,8 @@ const P=[
 ];
 
 const T={
-  zh:{ title:'小耳的世界 · 复古地图', world:'小耳的世界', worldSub:'THE WORLD OF XIAOER', help:'每一处都是我做的一件事 · 点它前往', htmlLang:'zh-CN' },
-  en:{ title:'The World of Xiaoer · A Vintage Map', world:'The World of Xiaoer', worldSub:'小 耳 的 世 界', help:'every place is something I made · click to visit', htmlLang:'en' },
+  zh:{ title:'小耳的世界 · 复古地图', world:'小耳的世界', worldSub:'THE WORLD OF XIAOER', help:'每一处都是我做的一件事 · 点它前往', home:'返回主页', htmlLang:'zh-CN' },
+  en:{ title:'The World of Xiaoer · A Vintage Map', world:'The World of Xiaoer', worldSub:'小 耳 的 世 界', help:'every place is something I made · click to visit', home:'Back Home', htmlLang:'en' },
 };
 
 const LS_KEY='xe-lang';            // shared site-wide language preference
@@ -155,7 +163,7 @@ function build(){
   const t=T[LANG], en=(LANG==='en');
   // world title
   const wt=document.createElement('div');
-  wt.className='worldtitle'+(en?' en':'');wt.style.left='82.5%';wt.style.top='88.5%';
+  wt.className='worldtitle'+(en?' en':'');wt.style.left='84.2%';wt.style.top='86.1%';
   wt.innerHTML='<div class="z">'+t.world+'</div><div class="e">'+t.worldSub+'</div>';
   layer.appendChild(wt);
   // region headers
@@ -175,6 +183,7 @@ function build(){
     layer.appendChild(d);});
   // chrome
   helpEl.textContent=t.help;
+  document.querySelector('#homelink .tx').textContent=t.home;
   document.title=t.title;
   document.documentElement.lang=t.htmlLang;
   toggle.querySelectorAll('b').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));
