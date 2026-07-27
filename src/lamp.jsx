@@ -2,6 +2,7 @@
 const { clamp } = window._util;
 
 function Lamp({ on, onToggle }) {
+  const lang = window.useLang();
   const [cordY, setCordY] = React.useState(0);
   const [pulling, setPulling] = React.useState(false);
   const [wiggle, setWiggle] = React.useState(0); // gentle attract-animation amplitude when lamp off
@@ -167,12 +168,12 @@ function Lamp({ on, onToggle }) {
       </svg>
       <div className="pull-cord"
            onPointerDown={onDown}
-           aria-label="拉一下点亮台灯 · pull to light"
+           aria-label={window.T.cordAria[lang]}
            role="button"/>
       {!on && (
         <div className="cord-hint" aria-hidden="true">
           <span className="cord-hint-arrow">←</span>
-          <span className="cord-hint-text">拉开关 · pull</span>
+          <span className="cord-hint-text">{window.T.cordHint[lang]}</span>
         </div>
       )}
     </div>

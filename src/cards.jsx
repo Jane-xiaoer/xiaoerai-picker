@@ -1,9 +1,10 @@
 // cards.jsx — engraved folio cards in the drawer, with flip+fly-to-center animation
+// title/subtitle carry both languages; the live language picks which shows (see CardFace)
 const CARDS = [
-  { id: 'arsenal',  title: '弹药库', subtitle: 'Arsenal · 350+ Tools',   roman: 'I',   symbol: 'anvil',    href: 'https://tools.xiaoerai.xyz' },
-  { id: 'zoetrope', title: '走马灯', subtitle: 'Zoetrope · AI Videos',   roman: 'II',  symbol: 'scroll',   href: 'https://video.xiaoerai.xyz' },
-  { id: 'curio',    title: '百物匣', subtitle: 'Curio Box · Artifacts',  roman: 'III', symbol: 'envelope', href: 'https://store.xiaoerai.xyz' },
-  { id: 'workbox',  title: '鲁班箱', subtitle: 'Luban Box · Toolkit',    roman: 'IV',  symbol: 'lubanbox', href: 'https://workbox.xiaoerai.xyz' },
+  { id: 'arsenal',  t: { zh: '弹药库', en: 'Arsenal' },   s: { zh: '自研工具 · 350+',   en: 'Arsenal · 350+ Tools' },  roman: 'I',   symbol: 'anvil',    href: 'https://tools.xiaoerai.xyz' },
+  { id: 'zoetrope', t: { zh: '走马灯', en: 'Zoetrope' },  s: { zh: 'AI 视频 · 广告作品', en: 'Zoetrope · AI Videos' },  roman: 'II',  symbol: 'scroll',   href: 'https://video.xiaoerai.xyz' },
+  { id: 'curio',    t: { zh: '百物匣', en: 'Curio Box' }, s: { zh: '衍生品 · 周边小店',  en: 'Curio Box · Artifacts' }, roman: 'III', symbol: 'envelope', href: 'https://store.xiaoerai.xyz' },
+  { id: 'workbox',  t: { zh: '鲁班箱', en: 'Luban Box' }, s: { zh: '开源工具箱',        en: 'Luban Box · Toolkit' },   roman: 'IV',  symbol: 'lubanbox', href: 'https://workbox.xiaoerai.xyz' },
 ];
 
 // Layout: cards in a fan across the drawer (percent of overlay).
@@ -111,6 +112,7 @@ function CardSymbol({ symbol }) {
 
 function CardFace({ card, back }) {
   const ink = '#2e1e10';
+  const lang = window.useLang();
   if (back) {
     // back: monogram pattern
     return (
@@ -171,7 +173,7 @@ function CardFace({ card, back }) {
         {/* title */}
         <text x="140" y="280" textAnchor="middle"
               fontFamily="'Cormorant Garamond', serif" fontStyle="italic"
-              fontSize="32" fill={ink}>{card.title}</text>
+              fontSize="32" fill={ink}>{card.t[lang]}</text>
         {/* ornament line */}
         <g transform="translate(140 298)">
           <line x1="-60" y1="0" x2="-12" y2="0" stroke={ink} strokeWidth=".8"/>
@@ -182,7 +184,7 @@ function CardFace({ card, back }) {
         <text x="140" y="322" textAnchor="middle"
               fontFamily="'Special Elite', monospace"
               fontSize="10" letterSpacing="3" fill={ink}>
-          {card.subtitle.toUpperCase()}
+          {card.s[lang].toUpperCase()}
         </text>
         {/* bottom plate number */}
         <text x="140" y="360" textAnchor="middle"

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>小耳的世界 · 复古地图(信息优先)</title>
+<title>小耳的世界 · 复古地图</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -18,6 +18,7 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 /* the WORLD title */
 .worldtitle{position:absolute;left:50%;top:5.5%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;transition:opacity 1s ease}
 .worldtitle .z{font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(12px,1.28vw,20px);color:var(--ink);letter-spacing:.06em}
+.worldtitle.en .z{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(14px,1.5vw,24px);letter-spacing:.02em}
 .worldtitle .e{font-family:'Special Elite',monospace;font-size:clamp(7px,.62vw,10px);letter-spacing:.3em;color:var(--soft);margin-top:3px}
 
 /* region headers */
@@ -35,9 +36,11 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 .plaque:hover::before{opacity:1}
 .plaque .zh{font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(12px,1.2vw,18px);color:var(--ink);line-height:1.15;
   letter-spacing:.02em;text-shadow:0 0 4px var(--paper),0 0 2px var(--paper),0 1px 1px var(--paper)}
+.plaque.en .zh{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;letter-spacing:.01em}
 .plaque .rule{height:2px;width:64%;margin:3px auto 2px;background:var(--ink);opacity:.6;filter:url(#rough)}
 .plaque .sub{font-family:'Noto Serif SC',serif;font-weight:500;font-size:clamp(9px,.82vw,12.5px);color:var(--soft);letter-spacing:.02em;
   text-shadow:0 0 4px var(--paper),0 0 2px var(--paper),0 1px 1px var(--paper)}
+.plaque.en .sub{font-family:'EB Garamond','Cormorant Garamond',serif;font-size:clamp(9px,.84vw,13px)}
 .plaque:hover{transform:translate(-50%,calc(-50% - 3px));z-index:50}
 .plaque:hover .zh{color:var(--red)}
 .plaque:hover .rule{opacity:.9;width:82%;background:var(--red)}
@@ -55,13 +58,20 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 .plaque.sm .zh{font-size:clamp(11px,1.02vw,15px)}
 .plaque.sm .rule{width:56%}
 .plaque.sm .sub{font-size:clamp(8px,.72vw,11px)}
-.plaque .en2{font-family:'Special Elite',monospace;font-size:clamp(8px,.72vw,11px);letter-spacing:.1em;color:var(--faint);margin-top:2px;
-  text-shadow:0 0 4px var(--paper),0 0 2px var(--paper)}
 .plaque.noclick{cursor:default}
 .plaque.noclick:hover .zh{color:var(--ink)} .plaque.noclick:hover .rule{background:var(--ink);opacity:.6;width:64%}
 
+/* site-wide language toggle — engraved pill; pref shared across the whole site via localStorage */
+.langtoggle{position:fixed;left:12px;top:11px;z-index:9;display:flex;align-items:stretch;
+  border:1.6px solid var(--ink);border-radius:20px;overflow:hidden;background:rgba(243,236,216,.9);
+  box-shadow:0 2px 9px rgba(60,40,15,.2);font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.1em;cursor:pointer}
+.langtoggle b{padding:5px 13px;font-weight:400;color:var(--soft);transition:background .25s ease,color .25s ease;user-select:none}
+.langtoggle b:first-child{border-right:1.4px solid var(--ink)}
+.langtoggle b.on{background:var(--ink);color:var(--paper)}
+.langtoggle b:not(.on):hover{background:rgba(46,30,16,.1)}
+
 .credit{position:fixed;right:10px;top:8px;z-index:6;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(74,47,24,.5)}
-.help{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.18em;color:rgba(74,47,24,.6)}
+.help{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.16em;color:rgba(74,47,24,.6);text-align:center}
 </style></head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
@@ -74,83 +84,130 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
     <feDisplacementMap in="SourceGraphic" in2="n" scale="3"/>
   </filter>
 </defs></svg>
+
+<div class="langtoggle" id="langtoggle" title="中文 / English">
+  <b data-lang="zh">中</b><b data-lang="en">EN</b>
+</div>
+
 <div id="stage">
   <div class="wrap" id="wrap">
     <img class="base" src="maps/feat-A.jpg" alt=""><!-- clean base; island stamps discarded -->
     <div class="vig"></div>
-    <div class="layer" id="layer">
-      <div class="worldtitle" style="left:85%;top:83.5%"><div class="z">小耳的世界</div><div class="e">THE WORLD OF XIAOER</div></div>
-    </div>
+    <div class="layer" id="layer"></div>
   </div>
 </div>
-<div class="help">每一处都是我做的一件事 · 点它前往</div>
+<div class="help" id="help"></div>
 <div class="credit">CONCEPT · SIMPLE MAP · 信息优先 v1</div>
 
 <script>
-// x,y in % of plan-A map. Placed per the approved blueprint (regions each in their own land).
-// cat=accent; big=中央京城; mid=独立地标(Omia/艺术站); url null=非跳转信息牌
-// feat-A: every label anchored to a concrete drawn feature (town / tower-peak / island / castle / lighthouse)
+// x,y in % of feat-A map. Every label anchored to a concrete drawn feature (town/tower-peak/island/castle/lighthouse).
+// Fully bilingual: zh/en = name, sub/subEn = one-line description. cat=accent; big=中央京城; mid=独立地标; sm=社媒.
 const HEADS=[
- {x:16,y:11,z:'奇 物 录 · 作 品 集',e:'THE FOLIO',url:'https://xiaoerai.xyz'},
- {x:82,y:8, z:'馆 藏 · 七 个 馆',e:'THE HALLS',url:'https://xiaoercamera.xyz'},
- {x:48,y:79,z:'社 媒 群 岛',e:'THE ISLES'},
- {x:62,y:53,z:'联 系 港 湾',e:'THE HARBOUR'},
+ {x:16,y:11,z:'奇 物 录 · 作 品 集',zEn:'The Folio · Works',   e:'THE FOLIO',  url:'https://xiaoerai.xyz'},
+ {x:82,y:8, z:'馆 藏 · 七 个 馆',    zEn:'The Halls · Seven',   e:'THE HALLS',  url:'https://xiaoercamera.xyz'},
+ {x:48,y:79,z:'社 媒 群 岛',        zEn:'Social Isles',        e:'THE ISLES'},
+ {x:62,y:53,z:'联 系 港 湾',        zEn:'The Harbour',         e:'THE HARBOUR'},
 ];
 const P=[
  // 中央城堡岛 = 关于我
- {x:48,y:30,cat:'about',big:1,zh:'关于我',sub:'AI 艺术家 · AI Builder · 创作者',url:'https://tools.xiaoerai.xyz/me'},
+ {x:48,y:30,cat:'about',big:1,zh:'关于我',en:'About Me',sub:'AI 艺术家 · AI Builder · 创作者',subEn:'AI Artist · AI Builder · Creator',url:'https://tools.xiaoerai.xyz/me'},
  // 北海独岛 = Omia / 西南独岛 = 艺术站
- {x:51,y:16,cat:'about',mid:1,zh:'Omia',sub:'清爽的万能阅览器 · 产品',url:'https://xiaoeromia.com'},
- {x:29,y:77,cat:'about',mid:1,zh:'艺术站',sub:'AI 艺术 · 参展 · 作品集',url:'https://xiaoer-art.com'},
+ {x:51,y:16,cat:'about',mid:1,zh:'Omia',en:'Omia',sub:'清爽的万能阅览器 · 产品',subEn:'Open Anything · a clean universal reader',url:'https://xiaoeromia.com'},
+ {x:29,y:77,cat:'about',mid:1,zh:'艺术站',en:'Art Studio',sub:'AI 艺术 · 参展 · 作品集',subEn:'AI art · exhibitions · portfolio',url:'https://xiaoer-art.com'},
  // 西境大陆 · 4 镇
- {x:13,y:25,cat:'work',zh:'弹药库',sub:'350+ 自研工具墙',url:'https://tools.xiaoerai.xyz'},
- {x:29,y:24,cat:'work',zh:'走马灯',sub:'AI 视频 · 广告作品',url:'https://video.xiaoerai.xyz'},
- {x:14,y:46,cat:'work',zh:'百物匣',sub:'衍生品周边小店',url:'https://store.xiaoerai.xyz'},
- {x:30,y:43,cat:'work',zh:'鲁班箱',sub:'开源工具 · 点格子看',url:'https://workbox.xiaoerai.xyz'},
+ {x:13,y:25,cat:'work',zh:'弹药库',en:'The Arsenal',sub:'350+ 自研工具墙',subEn:'350+ self-built tools',url:'https://tools.xiaoerai.xyz'},
+ {x:29,y:24,cat:'work',zh:'走马灯',en:'The Zoetrope',sub:'AI 视频 · 广告作品',subEn:'AI video · ad work',url:'https://video.xiaoerai.xyz'},
+ {x:14,y:46,cat:'work',zh:'百物匣',en:'The Curio Box',sub:'衍生品周边小店',subEn:'merch & goods shop',url:'https://store.xiaoerai.xyz'},
+ {x:30,y:43,cat:'work',zh:'鲁班箱',en:'The Workbox',sub:'开源工具 · 点格子看',subEn:'open-source tools',url:'https://workbox.xiaoerai.xyz'},
  // 东境山脉 · 7 座塔峰(左右两列拉开,不挤不叠)
- {x:70,y:27,cat:'museum',zh:'音乐馆',sub:'会画画的音乐播放器',url:'https://fm.xiaoercamera.xyz'},
- {x:85,y:16,cat:'museum',zh:'相机馆',sub:'相机博物馆交互',url:'https://camera.xiaoercamera.xyz'},
- {x:69,y:44,cat:'museum',zh:'城市馆',sub:'3D 城市漫游',url:'https://city.xiaoercamera.xyz'},
- {x:80,y:56,cat:'museum',zh:'跳舞馆',sub:'跳舞 · 星空视觉',url:'https://dance.xiaoercamera.xyz'},
- {x:88,y:31,cat:'museum',zh:'居家馆',sub:'居家艺术展交互',url:'https://home.xiaoercamera.xyz'},
- {x:89,y:62,cat:'museum',zh:'弹珠馆',sub:'弹珠物理 · Bits&Poetry',url:'https://marbles.xiaoercamera.xyz'},
- {x:87,y:47,cat:'museum',zh:'肖像馆',sub:'AI 大牌肖像生成',url:'https://portrait.xiaoercamera.xyz'},
+ {x:70,y:27,cat:'museum',zh:'音乐馆',en:'Music Gallery',sub:'会画画的音乐播放器',subEn:'a music player that paints',url:'https://fm.xiaoercamera.xyz'},
+ {x:85,y:16,cat:'museum',zh:'相机馆',en:'Camera Gallery',sub:'相机博物馆交互',subEn:'interactive camera museum',url:'https://camera.xiaoercamera.xyz'},
+ {x:69,y:44,cat:'museum',zh:'城市馆',en:'City Gallery',sub:'3D 城市漫游',subEn:'a 3D city to roam',url:'https://city.xiaoercamera.xyz'},
+ {x:80,y:56,cat:'museum',zh:'跳舞馆',en:'Dance Gallery',sub:'跳舞 · 星空视觉',subEn:'dance · starfield visuals',url:'https://dance.xiaoercamera.xyz'},
+ {x:88,y:31,cat:'museum',zh:'居家馆',en:'Home Gallery',sub:'居家艺术展交互',subEn:'interactive home-art show',url:'https://home.xiaoercamera.xyz'},
+ {x:89,y:62,cat:'museum',zh:'弹珠馆',en:'Marble Gallery',sub:'弹珠物理 · Bits&Poetry',subEn:'marble physics · Bits & Poetry',url:'https://marbles.xiaoercamera.xyz'},
+ {x:87,y:47,cat:'museum',zh:'肖像馆',en:'Portrait Gallery',sub:'AI 大牌肖像生成',subEn:'AI star-portrait maker',url:'https://portrait.xiaoercamera.xyz'},
  // 中部灯塔港湾 · 联系(2)
- {x:58,y:64,cat:'contact',zh:'微信',sub:'xiaoer-zhan · 加我私聊',url:null},
- {x:68,y:64,cat:'contact',zh:'邮箱',sub:'合作 · 商务',url:'mailto:xiaoerzhan@gmail.com'},
- // 南海群岛 · 社媒(7)
- {x:40,y:86,cat:'account',sm:1,zh:'X',sub:'技术圈主阵地',url:'https://x.com/xiaoerzhan'},
- {x:50,y:88,cat:'account',sm:1,zh:'小红书',sub:'大众 · 艺术向内容',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
- {x:60,y:85,cat:'account',sm:1,zh:'公众号',sub:'长文深度主阵地',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
- {x:55,y:93,cat:'account',sm:1,zh:'B站',sub:'视频 · 知识',url:'https://space.bilibili.com/18947646'},
- {x:45,y:58,cat:'account',sm:1,zh:'GitHub',sub:'开源作品 · 此处有龙',url:'https://github.com/Jane-xiaoer'},
+ {x:58,y:64,cat:'contact',zh:'微信',en:'WeChat',sub:'xiaoer-zhan · 加我私聊',subEn:'xiaoer-zhan · say hi',url:null},
+ {x:68,y:64,cat:'contact',zh:'邮箱',en:'Email',sub:'合作 · 商务',subEn:'work · collaboration',url:'mailto:xiaoerzhan@gmail.com'},
+ // 南海群岛 · 社媒(5)
+ {x:40,y:86,cat:'account',sm:1,zh:'X',en:'X',sub:'技术圈主阵地',subEn:'home base for tech',url:'https://x.com/xiaoerzhan'},
+ {x:50,y:88,cat:'account',sm:1,zh:'小红书',en:'RED',sub:'大众 · 艺术向内容',subEn:'art & lifestyle',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
+ {x:60,y:85,cat:'account',sm:1,zh:'公众号',en:'WeChat Blog',sub:'长文深度主阵地',subEn:'long-form essays',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
+ {x:55,y:93,cat:'account',sm:1,zh:'B站',en:'Bilibili',sub:'视频 · 知识',subEn:'video · knowledge',url:'https://space.bilibili.com/18947646'},
+ {x:45,y:58,cat:'account',sm:1,zh:'GitHub',en:'GitHub',sub:'开源作品 · 此处有龙',subEn:'open source · here be dragons',url:'https://github.com/Jane-xiaoer'},
 ];
-const layer=document.getElementById('layer');
-HEADS.forEach(h=>{const d=document.createElement('div');d.className='rhead';d.style.left=h.x+'%';d.style.top=h.y+'%';
-  d.innerHTML='<div class="z">'+h.z+(h.url?' <span style="font-size:.6em;opacity:.5">↗</span>':'')+'</div><div class="e">'+h.e+'</div>';
-  if(h.url){d.style.pointerEvents='auto';d.style.cursor='pointer';d.addEventListener('click',()=>window.open(h.url,'_blank','noopener'));}
-  layer.appendChild(d);});
-P.forEach(p=>{const d=document.createElement('div');d.className='plaque cat-'+p.cat+(p.big?' big':'')+(p.mid?' mid':'')+(p.sm?' sm':'')+(p.url?'':' noclick');
-  d.style.left=p.x+'%';d.style.top=p.y+'%';
-  d.innerHTML='<div class="zh">'+p.zh+(p.url?' <span style="font-size:.72em;opacity:.5">↗</span>':'')+'</div><div class="rule"></div><div class="sub">'+p.sub+'</div>'+(p.en?'<div class="en2">'+p.en+'</div>':'');
-  if(p.url)d.addEventListener('click',()=>window.open(p.url,'_blank','noopener'));
-  layer.appendChild(d);});
-// gentle parallax
-const layerEl=layer;
-addEventListener('mousemove',e=>{const mx=(e.clientX/innerWidth-.5),my=(e.clientY/innerHeight-.5);
-  layerEl.style.transform=`translate(${-mx*.8}%,${-my*.8}%)`;});
 
-// entrance: center-out bloom (Web Animations API — base stays visible; gated on visibility so it can never stick transparent)
+const T={
+  zh:{ title:'小耳的世界 · 复古地图', world:'小耳的世界', worldSub:'THE WORLD OF XIAOER', help:'每一处都是我做的一件事 · 点它前往', htmlLang:'zh-CN' },
+  en:{ title:'The World of Xiaoer · A Vintage Map', world:'The World of Xiaoer', worldSub:'小 耳 的 世 界', help:'every place is something I made · click to visit', htmlLang:'en' },
+};
+
+const LS_KEY='xe-lang';            // shared site-wide language preference
+let LANG=(localStorage.getItem(LS_KEY)==='en')?'en':'zh';
+
+const layer=document.getElementById('layer');
+const helpEl=document.getElementById('help');
+const toggle=document.getElementById('langtoggle');
+
+function build(){
+  layer.innerHTML='';
+  const t=T[LANG], en=(LANG==='en');
+  // world title
+  const wt=document.createElement('div');
+  wt.className='worldtitle'+(en?' en':'');wt.style.left='85%';wt.style.top='83.5%';
+  wt.innerHTML='<div class="z">'+t.world+'</div><div class="e">'+t.worldSub+'</div>';
+  layer.appendChild(wt);
+  // region headers
+  HEADS.forEach(h=>{const d=document.createElement('div');d.className='rhead'+(en?' en':'');
+    d.style.left=h.x+'%';d.style.top=h.y+'%';
+    const name=en?h.zEn:h.z;
+    d.innerHTML='<div class="z">'+name+(h.url?' <span style="font-size:.6em;opacity:.5">↗</span>':'')+'</div><div class="e">'+h.e+'</div>';
+    if(h.url){d.style.pointerEvents='auto';d.style.cursor='pointer';d.addEventListener('click',()=>window.open(h.url,'_blank','noopener'));}
+    layer.appendChild(d);});
+  // place labels
+  P.forEach(p=>{const d=document.createElement('div');
+    d.className='plaque cat-'+p.cat+(en?' en':'')+(p.big?' big':'')+(p.mid?' mid':'')+(p.sm?' sm':'')+(p.url?'':' noclick');
+    d.style.left=p.x+'%';d.style.top=p.y+'%';
+    const name=en?p.en:p.zh, sub=en?p.subEn:p.sub;
+    d.innerHTML='<div class="zh">'+name+(p.url?' <span style="font-size:.72em;opacity:.5">↗</span>':'')+'</div><div class="rule"></div><div class="sub">'+sub+'</div>';
+    if(p.url)d.addEventListener('click',()=>window.open(p.url,'_blank','noopener'));
+    layer.appendChild(d);});
+  // chrome
+  helpEl.textContent=t.help;
+  document.title=t.title;
+  document.documentElement.lang=t.htmlLang;
+  toggle.querySelectorAll('b').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));
+}
+
+// entrance: center-out bloom (base stays visible; gated on visibility so it can never stick transparent)
 function bloomIn(){
   if(!Element.prototype.animate) return;
-  const els=[...layer.querySelectorAll('.plaque,.rhead,.worldtitle')];
-  els.forEach(el=>{
+  [...layer.querySelectorAll('.plaque,.rhead,.worldtitle')].forEach(el=>{
     const cx=parseFloat(el.style.left)||50, cy=parseFloat(el.style.top)||45;
     const d=Math.hypot(cx-48,cy-42);
     el.animate([{opacity:0},{opacity:1}], {duration:760, delay:220+d*15, easing:'ease', fill:'backwards'});
   });
 }
+
+function setLang(l,animate){
+  if(l===LANG && animate!=='force') { }   // still rebuild on first paint
+  LANG=l; localStorage.setItem(LS_KEY,l);
+  build();
+  if(animate==='fade' && Element.prototype.animate){ layer.animate([{opacity:0},{opacity:1}],{duration:280,easing:'ease'}); }
+}
+
+toggle.querySelectorAll('b').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.lang!==LANG) setLang(b.dataset.lang,'fade'); }));
+// react if another tab / the main site flips the shared preference
+addEventListener('storage',e=>{ if(e.key===LS_KEY && (e.newValue==='zh'||e.newValue==='en') && e.newValue!==LANG) setLang(e.newValue,'fade'); });
+
+// initial paint
+build();
 if(document.visibilityState==='visible'){ bloomIn(); }
 else { document.addEventListener('visibilitychange',function once(){ if(document.visibilityState==='visible'){bloomIn();document.removeEventListener('visibilitychange',once);} }); }
+
+// gentle parallax
+addEventListener('mousemove',e=>{const mx=(e.clientX/innerWidth-.5),my=(e.clientY/innerHeight-.5);
+  layer.style.transform=`translate(${-mx*.8}%,${-my*.8}%)`;});
 </script>
 </body></html>

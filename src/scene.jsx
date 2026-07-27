@@ -135,7 +135,8 @@ function Inkwell() {
 }
 
 function PlateTitle({ lampOn, drawerOpen }) {
-  const title = drawerOpen ? 'Cabinet, Open' : "Xiaoer's Desk";
+  const lang = window.useLang();
+  const title = drawerOpen ? window.T.cabinetOpen[lang] : window.T.deskTitle[lang];
   const fig = drawerOpen ? 'PL. II — INTERIOR' : 'PL. I — ARRANGEMENT';
   const state = lampOn ? 'LIT' : 'UNLIT';
   return (

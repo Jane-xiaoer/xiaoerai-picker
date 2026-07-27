@@ -1,6 +1,6 @@
 // app.jsx — root app; orchestrates scene states, lamp, drawer, cards, pages, tweaks
 const { Lamp, DeskLine, Book, Mug, Pen, Inkwell, PlateTitle, CornerOrnaments, Dust,
-        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks } = window;
+        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle } = window;
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
   "hue": 38,
@@ -10,6 +10,7 @@ const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 function App() {
+  const lang = window.useLang();
   const [lampOn, setLampOn] = React.useState(false);
   const [view, setView] = React.useState('room'); // room | drawer | card | page
   const [flyingId, setFlyingId] = React.useState(null);
@@ -82,6 +83,7 @@ function App() {
 
   return (
     <>
+      <LangToggle/>
       <div className={`stage ${lampOn ? 'on' : ''}`}>
         <div className="paper-ground"/>
         <div className={`lamp-glow`}/>
@@ -108,7 +110,7 @@ function App() {
         {/* Back to room from drawer */}
         <button
           className={`back-to-room ${view === 'drawer' ? 'show' : ''}`}
-          onClick={closeDrawer}>← Back to Desk</button>
+          onClick={closeDrawer}>{window.T.backToDesk[lang]}</button>
       </div>
 
       <PageLayer activeId={activePageId} onBack={backFromPage}/>

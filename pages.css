@@ -270,3 +270,13 @@
   font-style: italic;
   text-wrap: pretty;
 }
+
+/* ── site-wide language toggle (中 / EN) — matches the /me map pill ───────── */
+.lang-toggle{position:fixed;left:14px;top:13px;z-index:120;display:flex;align-items:stretch;
+  border:1.6px solid #2e1e10;border-radius:20px;overflow:hidden;background:rgba(236,226,200,.92);
+  box-shadow:0 2px 9px rgba(60,40,15,.22);font-family:'Special Elite',monospace;font-size:12px;
+  letter-spacing:.1em;cursor:pointer;backdrop-filter:blur(1px)}
+.lang-toggle b{padding:5px 13px;font-weight:400;color:#5a3f22;transition:background .25s ease,color .25s ease;user-select:none}
+.lang-toggle b:first-child{border-right:1.4px solid #2e1e10}
+.lang-toggle b.on{background:#2e1e10;color:#f2ead4}
+.lang-toggle b:not(.on):hover{background:rgba(46,30,16,.1)}

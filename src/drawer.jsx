@@ -1,5 +1,6 @@
 // drawer.jsx — engraved drawer front (closed) and top-down interior (open)
 function DrawerClosed({ onOpen, disabled }) {
+  const lang = window.useLang();
   const [waking, setWaking] = React.useState(false);
 
   // When the lamp turns on (disabled flips false), nudge the drawer 4 times in tight
@@ -72,7 +73,7 @@ function DrawerClosed({ onOpen, disabled }) {
       </svg>
       {!disabled && (
         <div className="drawer-hint" aria-hidden="true">
-          <span className="drawer-hint-text">拉开抽屉 · open</span>
+          <span className="drawer-hint-text">{window.T.drawerHint[lang]}</span>
           <span className="drawer-hint-arrow">↑</span>
         </div>
       )}
