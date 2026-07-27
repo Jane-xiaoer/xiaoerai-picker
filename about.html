@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>关于小耳 · About Xiaoer</title>
+<meta name="description" content="小耳是一位 AI 艺术家、AI Builder 与 Creative Technologist，以艺术家的审美构建有质感的 AI 产品、开源工具与个人智能系统。">
+<link rel="canonical" href="https://xiaoerai.xyz/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f2ead4;--paper-deep:#e3d2a8;--ink:#2e1e10;--soft:#5d4329;--faint:#8a6844;--red:#8a2a18}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{margin:0;color:var(--ink);background:
+  radial-gradient(circle at 18% 8%,rgba(255,249,226,.8),transparent 30%),
+  linear-gradient(rgba(76,50,24,.035) 1px,transparent 1px),
+  var(--paper-deep);
+  background-size:auto,100% 5px,auto;font-family:'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:10;
+  box-shadow:inset 0 0 120px rgba(64,38,12,.18)}
+a{color:inherit}
+.nav{position:fixed;left:14px;right:14px;top:12px;z-index:20;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+.nav a{pointer-events:auto;text-decoration:none;font-family:'Cormorant Garamond','Noto Serif SC',serif;font-style:italic;font-weight:600;
+  padding:7px 11px;color:var(--soft);background:rgba(242,234,212,.86);border:1px solid rgba(74,47,24,.32);
+  box-shadow:0 2px 9px rgba(60,40,15,.12);transition:color .2s ease,transform .2s ease}
+.nav a:hover{color:var(--red);transform:translateY(-1px)}
+main{width:min(940px,calc(100% - 32px));margin:0 auto;padding:100px 0 64px}
+.folio{position:relative;background:rgba(242,234,212,.94);border:1px solid rgba(46,30,16,.5);
+  box-shadow:0 18px 55px rgba(64,38,12,.18);padding:clamp(30px,6vw,72px)}
+.folio::before,.folio::after{content:"";position:absolute;width:58px;height:58px;opacity:.48;border-color:var(--ink)}
+.folio::before{left:12px;top:12px;border-left:1px solid;border-top:1px solid}
+.folio::after{right:12px;bottom:12px;border-right:1px solid;border-bottom:1px solid}
+.eyebrow{text-align:center;font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.35em;color:var(--faint)}
+h1{margin:12px 0 9px;text-align:center;font-family:'Cormorant Garamond','Noto Serif SC',serif;
+  font-size:clamp(43px,8vw,76px);font-weight:600;font-style:italic;line-height:1}
+.identity{text-align:center;font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2.7vw,25px);
+  font-weight:600;letter-spacing:.02em;color:var(--red);overflow-wrap:anywhere}
+.subtitle{max-width:650px;margin:20px auto 0;text-align:center;font-size:clamp(15px,2vw,18px);line-height:1.85;font-weight:700}
+.rule{display:flex;align-items:center;gap:15px;margin:38px 0}.rule::before,.rule::after{content:"";height:1px;background:var(--ink);opacity:.5;flex:1}
+.rule span{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.25em;color:var(--faint)}
+.lead{font-size:clamp(16px,2vw,19px);line-height:2;letter-spacing:.015em}
+.sections{counter-reset:plate;margin-top:45px}
+.section{counter-increment:plate;display:grid;grid-template-columns:94px 1fr;gap:26px;padding:34px 0;border-top:1px solid rgba(46,30,16,.25)}
+.number::before{content:"PLATE " counter(plate,upper-roman);font-family:'Special Elite',monospace;
+  font-size:10px;letter-spacing:.16em;color:var(--faint);white-space:nowrap}
+h2{font-family:'Cormorant Garamond','Noto Serif SC',serif;font-size:clamp(27px,4vw,39px);
+  font-weight:600;margin:0 0 16px;line-height:1.25}
+.section p{margin:0;font-size:15px;line-height:2;color:#382617}
+.section p+p{margin-top:12px}
+details{border-top:1px solid rgba(46,30,16,.25);padding:32px 0}
+summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary h2{margin:0}
+summary::after{content:"展开阅读 ＋";font-family:'Special Elite','Noto Serif SC',monospace;font-size:10px;letter-spacing:.12em;color:var(--red);white-space:nowrap}
+details[open] summary::after{content:"收起 －"}
+.story{padding:23px 0 3px 120px;font-size:15px;line-height:2;color:#382617}
+.site-note{margin:45px 0 0;padding:23px 25px;border:1px solid rgba(46,30,16,.32);
+  background:rgba(224,207,164,.25);font-size:14px;line-height:1.9}
+.site-note strong{display:block;margin-bottom:6px;font-family:'Special Elite','Noto Serif SC',monospace;font-size:10px;letter-spacing:.18em;color:var(--faint)}
+footer{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px;padding:28px 10px 0;
+  font-family:'Special Elite','Noto Serif SC',monospace;font-size:11px;letter-spacing:.08em}
+footer a{text-decoration-thickness:1px;text-underline-offset:4px}
+@media(max-width:650px){
+  main{width:min(calc(100% - 20px),940px);padding-top:78px}
+  .folio{padding:42px 24px}
+  .identity{font-size:17px;line-height:1.45;padding:0 8px}
+  .lead,.section p,.story{overflow-wrap:anywhere}
+  .section{grid-template-columns:1fr;gap:9px;padding:28px 0}
+  .story{padding:20px 0 0}
+  .nav{left:8px;right:8px;top:8px}
+  .nav a{font-size:13px}
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"小耳","alternateName":"Xiaoer","url":"https://xiaoerai.xyz/about","sameAs":["https://github.com/Jane-xiaoer","https://x.com/xiaoerzhan","https://xiaoer-art.com"]}
+</script>
+</head>
+<body>
+<nav class="nav" aria-label="页面导航">
+  <a href="/me">← 全站地图</a>
+  <a href="/">回到奇物录</a>
+</nav>
+<main>
+  <article class="folio">
+    <header>
+      <div class="eyebrow">ABOUT XIAOER · PERSONA PLATE</div>
+      <h1>小耳</h1>
+      <div class="identity" id="identity">AI Artist × AI Builder × Creative Technologist</div>
+      <p class="subtitle" id="subtitle">以艺术家的审美，构建有质感的 AI 产品、开源工具与个人智能系统。</p>
+    </header>
+
+    <div class="rule"><span>WHO · WORK · SYSTEM</span></div>
+
+    <p class="lead" id="intro">小耳是一位 AI 艺术家、AI Builder 与 Creative Technologist。她把艺术家的审美、大型项目的构建思维与 AI Agent 实践深度结合，持续创造有质感的产品、开源工具和个人智能系统。她不只使用 AI 生成内容，更是在探索 AI 应该如何成为新的产品、体验、系统和工作方式。</p>
+
+    <div class="sections">
+      <section class="section">
+        <div class="number" aria-hidden="true"></div>
+        <div>
+          <h2>我是谁</h2>
+          <p>艺术家的审美、复杂项目的构建能力与 AI 实践，并不是三条分开的履历。它们共同构成小耳观察问题、创造产品和搭建系统的方式。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="number" aria-hidden="true"></div>
+        <div>
+          <h2>艺术实践</h2>
+          <p id="art">她作为一名生成式艺术家，不断探索创作边界。《初始方程》《方程之舞》《相机博物馆》《药石新绘》等作品曾在今日美术馆 AI 万人展、荣宝斋（深圳）、ISMA、重庆国际光影节、泉州华光国际影像双年展、上海春天画廊等机构及展览中展出。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="number" aria-hidden="true"></div>
+        <div>
+          <h2>懒坝与大型项目</h2>
+          <p id="lanba">她曾从 0 到 1 创办懒坝美术馆，是原懒坝美术馆艺术总监。她主导的《武隆懒坝国际大地艺术季》获 Tokyo TDC 优秀奖、美国 IES 照明奖、英国 LDA 照明奖、中国艺术权力榜年度公共艺术活动奖、谷德设计网全球 20 佳文化建筑等 5 项国际级大奖。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="number" aria-hidden="true"></div>
+        <div>
+          <h2>AI 产品、开源工具与个人智能系统</h2>
+          <p id="ai">在 AI 应用领域，她开发了让阅读回到内容的极简产品 Omia、让音乐生成动态画面的小耳 FM，以及没有独立 UI 的小耳 Save。她持续把产品实践、设计方法和工作流开源为网站构建、信息处理、视频创作、设计方法与无界面桌面 AI 工具，并搭建了一套连接知识库、文件、Agent、Skills、记忆与自动化的个人智能系统。</p>
+        </div>
+      </section>
+    </div>
+
+    <details id="story">
+      <summary><h2>我的故事</h2></summary>
+      <div class="story" id="story-body">
+        小耳的路径连接了艺术创作、艺术机构、大型公共艺术项目与 AI 产品实践。她并不是从艺术转向技术，而是把长期积累的审美判断、项目构建和系统思维继续带进 AI：像创造一件作品一样打磨产品，也把新的工具与工作方式开放给更多人使用。完整个人故事将在事实与时间线核验后继续补充。
+      </div>
+    </details>
+
+    <div class="site-note">
+      <strong>ABOUT THIS SITE</strong>
+      奇物录是小耳各类 AI 产品、视觉实验、开源工具与个人系统的总入口，也是这些跨界实践彼此相连的书桌。
+    </div>
+  </article>
+
+  <footer>
+    <a href="/about">关于小耳</a>
+    <a href="/me">全站地图</a>
+    <a href="https://github.com/Jane-xiaoer" rel="me">GitHub</a>
+    <a href="https://x.com/xiaoerzhan" rel="me">X</a>
+    <a href="mailto:xiaoerzhan@gmail.com">联系小耳</a>
+  </footer>
+</main>
+<script>
+const NETWORK_API='https://tools.xiaoerai.xyz/api/me-network';
+function flatten(node,out=[]){if(!node||typeof node!=='object')return out;out.push(node);(node.children||[]).forEach(child=>flatten(child,out));return out}
+function field(node,names){for(const name of names){const value=node&&node[name];if(typeof value==='string'&&value.trim())return value.trim()}return ''}
+function setText(id,value){if(value)document.getElementById(id).textContent=value}
+fetch(NETWORK_API,{headers:{Accept:'application/json'}})
+  .then(response=>response.ok?response.json():Promise.reject(new Error('network data unavailable')))
+  .then(root=>{
+    const center=flatten(root).find(node=>node.type==='center'||field(node,['地图角色','mapRole'])==='中心节点');
+    if(!center)return;
+    const display=field(center,['地图显示文案','mapDisplayText','displayText']);
+    const lines=display.split(/\n|｜/).map(value=>value.trim()).filter(Boolean);
+    if(lines[1]&&lines[1].includes('AI Artist'))setText('identity',lines[1]);
+    setText('subtitle',field(center,['定位（一句话）','固定副标题','subtitle']));
+    setText('intro',field(center,['完整介绍','standardAbout','about']));
+    setText('art',field(center,['艺术实践','artPractice']));
+    setText('lanba',field(center,['懒坝经历','lanbaExperience']));
+    setText('ai',field(center,['AI实践与成果','aiPractice']));
+    setText('story-body',field(center,['我的故事','story']));
+  })
+  .catch(()=>{/* The reviewed local copy remains readable when the data service is unavailable. */});
+</script>
+</body>
+</html>

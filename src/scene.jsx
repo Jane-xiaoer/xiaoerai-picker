@@ -269,7 +269,7 @@ function Globe({ onOpen }) {
 }
 
 // HeroDesk — the rendered engraving desk (raster hero) + 2.5D parallax + ambient life.
-// Replaces the old thin-line SVG desk. Two glowing hotspots: 我的故事 / 小耳的世界.
+// Alternate raster desk concept. The live room uses one About entry leading to /me.
 function HeroDesk({ onStory, onWorld }) {
   const lang = window.useLang();
   const T = window.T;

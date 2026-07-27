@@ -308,7 +308,7 @@
 .globe-cap .gc-arrow,.book-cap .gc-arrow{font-family:'Special Elite',monospace;font-size:11px;opacity:0;transition:opacity .3s ease}
 .globe:hover .gc-arrow,.book:hover .gc-arrow{opacity:.65}
 
-/* 关于我 · 我的故事 door — the stacked books, made clickable + labelled */
+/* 关于小耳 door — the stacked books lead into the whole-site map at /me */
 .book{display:flex;flex-direction:column;align-items:center;cursor:pointer;z-index:8;pointer-events:auto}
 .book-svg{width:100%;height:70px;display:block;overflow:visible;
   transition:transform .5s cubic-bezier(.34,1.3,.4,1),filter .5s ease}

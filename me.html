@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>小耳的世界 · 复古地图</title>
+<meta name="description" content="小耳的全站地图：从关于小耳出发，通往她的艺术作品、AI 产品、开源工具、个人智能系统与公开账号。">
+<link rel="canonical" href="https://xiaoerai.xyz/me">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -60,6 +62,16 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 .plaque.sm .sub{font-size:clamp(8px,.72vw,11px)}
 .plaque.noclick{cursor:default}
 .plaque.noclick:hover .zh{color:var(--ink)} .plaque.noclick:hover .rule{background:var(--ink);opacity:.6;width:64%}
+.plaque .bio-preview{position:absolute;left:50%;top:calc(100% + 8px);width:min(360px,78vw);padding:12px 15px;
+  transform:translate(-50%,7px);opacity:0;visibility:hidden;pointer-events:none;white-space:normal;text-align:left;
+  color:var(--ink);font-family:'Noto Serif SC',serif;font-size:clamp(10px,.78vw,12px);font-weight:500;line-height:1.75;
+  background:rgba(242,234,212,.97);border:1px solid rgba(74,47,24,.5);box-shadow:0 8px 22px rgba(55,35,12,.2);
+  transition:opacity .25s ease,transform .25s ease,visibility .25s ease}
+.plaque .bio-preview::before{content:"";position:absolute;left:50%;top:-5px;width:9px;height:9px;
+  transform:translateX(-50%) rotate(45deg);background:#f2ead4;border-left:1px solid rgba(74,47,24,.5);border-top:1px solid rgba(74,47,24,.5)}
+.plaque.has-preview:hover .bio-preview,.plaque.has-preview:focus-visible .bio-preview{
+  opacity:1;visibility:visible;transform:translate(-50%,0)}
+.plaque:focus-visible{outline:2px solid var(--red);outline-offset:4px}
 
 /* site-wide language toggle — engraved pill; pref shared across the whole site via localStorage */
 .langtoggle{position:fixed;left:12px;top:11px;z-index:9;display:flex;align-items:stretch;
@@ -80,6 +92,13 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 
 .credit{position:fixed;right:10px;top:8px;z-index:6;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(74,47,24,.5)}
 .help{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.16em;color:rgba(74,47,24,.6);text-align:center}
+.maplinks{position:fixed;right:12px;top:12px;z-index:9;display:flex;gap:14px;font-family:'Special Elite','Noto Serif SC',monospace;font-size:10px;letter-spacing:.06em}
+.maplinks a{color:var(--soft);text-underline-offset:3px}
+@media (hover:none),(max-width:700px){
+  .plaque .bio-preview{display:none}
+  .maplinks{top:auto;right:10px;bottom:9px;gap:10px;font-size:9px}
+  .help{display:none}
+}
 </style></head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
@@ -97,6 +116,12 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
   <b data-lang="zh">中</b><b data-lang="en">EN</b>
 </div>
 <a class="homelink" id="homelink" href="/" title="返回主页 / Home"><span class="ar">←</span><span class="tx"></span></a>
+<nav class="maplinks" aria-label="核心链接">
+  <a href="/about">关于小耳</a>
+  <a href="https://github.com/Jane-xiaoer">GitHub</a>
+  <a href="https://x.com/xiaoerzhan">X</a>
+  <a href="mailto:xiaoerzhan@gmail.com">联系</a>
+</nav>
 
 <div id="stage">
   <div class="wrap" id="wrap">
@@ -118,7 +143,9 @@ const HEADS=[
 ];
 const P=[
  // 中央城堡岛 = 关于我
- {x:50,y:36,cat:'about',big:1,zh:'关于我',en:'About Me',sub:'AI 艺术家 · AI Builder · 创作者',subEn:'AI Artist · AI Builder · Creator',url:'https://tools.xiaoerai.xyz/me'},
+ {x:50,y:36,cat:'about',big:1,zh:'小耳',en:'Xiaoer',sub:'AI Artist × AI Builder × Creative Technologist',subEn:'AI Artist × AI Builder × Creative Technologist',url:'/about',
+  hover:'小耳是一位 AI 艺术家、AI Builder 与 Creative Technologist。她以艺术家的审美，把 AI 变成有质感的产品、开源工具和个人智能系统。点击进一步认识小耳。',
+  hoverEn:'Xiaoer is an AI Artist, AI Builder, and Creative Technologist. She brings an artist’s eye to crafted AI products, open-source tools, and personal intelligent systems. Click to learn more.'},
  // 两座独立小岛 = Omia(上左) / 艺术站(下左)
  {x:23,y:30,cat:'about',mid:1,zh:'Omia',en:'Omia',sub:'清爽的万能阅览器 · 产品',subEn:'Open Anything · a clean universal reader',url:'https://xiaoeromia.com'},
  {x:17,y:66,cat:'about',mid:1,zh:'艺术站',en:'Art Studio',sub:'AI 艺术 · 参展 · 作品集',subEn:'AI art · exhibitions · portfolio',url:'https://xiaoer-art.com'},
@@ -153,6 +180,7 @@ const T={
 
 const LS_KEY='xe-lang';            // shared site-wide language preference
 let LANG=(localStorage.getItem(LS_KEY)==='en')?'en':'zh';
+const NETWORK_API='https://tools.xiaoerai.xyz/api/me-network';
 
 const layer=document.getElementById('layer');
 const helpEl=document.getElementById('help');
@@ -175,11 +203,17 @@ function build(){
     layer.appendChild(d);});
   // place labels
   P.forEach(p=>{const d=document.createElement('div');
-    d.className='plaque cat-'+p.cat+(en?' en':'')+(p.big?' big':'')+(p.mid?' mid':'')+(p.sm?' sm':'')+(p.url?'':' noclick');
+    const preview=en?p.hoverEn:p.hover;
+    d.className='plaque cat-'+p.cat+(en?' en':'')+(p.big?' big':'')+(p.mid?' mid':'')+(p.sm?' sm':'')+(p.url?'':' noclick')+(preview?' has-preview':'');
     d.style.left=p.x+'%';d.style.top=p.y+'%';
     const name=en?p.en:p.zh, sub=en?p.subEn:p.sub;
-    d.innerHTML='<div class="zh">'+name+(p.url?' <span style="font-size:.72em;opacity:.5">↗</span>':'')+'</div><div class="rule"></div><div class="sub">'+sub+'</div>';
-    if(p.url)d.addEventListener('click',()=>window.open(p.url,'_blank','noopener'));
+    d.innerHTML='<div class="zh">'+escapeHtml(name)+(p.url?' <span style="font-size:.72em;opacity:.5">↗</span>':'')+'</div><div class="rule"></div><div class="sub">'+escapeHtml(sub)+'</div>'+(preview?'<div class="bio-preview" role="tooltip">'+escapeHtml(preview)+'</div>':'');
+    if(p.url){
+      d.tabIndex=0;d.setAttribute('role','link');
+      const open=()=>p.url.startsWith('/')?(window.location.href=p.url):window.open(p.url,'_blank','noopener');
+      d.addEventListener('click',open);
+      d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+    }
     layer.appendChild(d);});
   // chrome
   helpEl.textContent=t.help;
@@ -187,6 +221,57 @@ function build(){
   document.title=t.title;
   document.documentElement.lang=t.htmlLang;
   toggle.querySelectorAll('b').forEach(b=>b.classList.toggle('on',b.dataset.lang===LANG));
+}
+
+function escapeHtml(value){
+  return String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function firstField(node,names){
+  for(const name of names){const value=node&&node[name];if(typeof value==='string'&&value.trim())return value.trim();}
+  return '';
+}
+
+function flatten(node,out=[]){
+  if(!node||typeof node!=='object')return out;
+  out.push(node);
+  (node.children||[]).forEach(child=>flatten(child,out));
+  return out;
+}
+
+function comparable(url){
+  if(!url)return '';
+  try{const u=new URL(url,location.origin);return (u.hostname+u.pathname).replace(/\/$/,'').toLowerCase();}
+  catch{return String(url).replace(/^https?:\/\//,'').replace(/\/$/,'').toLowerCase();}
+}
+
+function applyNetworkData(root){
+  const nodes=flatten(root);
+  const center=nodes.find(n=>n.type==='center'||firstField(n,['地图角色','mapRole'])==='中心节点');
+  if(center){
+    const display=firstField(center,['地图显示文案','mapDisplayText','displayText']);
+    const hover=firstField(center,['悬停文案','hoverText','hover']);
+    const englishHover=firstField(center,['hoverTextEn','hoverEn']);
+    if(display){
+      const lines=display.split(/\n|｜/).map(x=>x.trim()).filter(Boolean);
+      if(lines[0])P[0].zh=lines[0];
+      if(lines[1]&&lines[1].includes('AI Artist'))P[0].sub=P[0].subEn=lines[1];
+    }
+    if(hover)P[0].hover=hover;
+    if(englishHover)P[0].hoverEn=englishHover;
+  }
+  P.slice(1).forEach(place=>{
+    const key=comparable(place.url);
+    if(!key)return;
+    const node=nodes.find(n=>comparable(n.href||n.url)===key);
+    if(!node)return;
+    place.zh=firstField(node,['label','展示名'])||place.zh;
+    place.en=firstField(node,['en','英文名'])||place.en;
+    place.sub=firstField(node,['sub','短介绍','定位（一句话）'])||place.sub;
+    place.subEn=firstField(node,['ens','subEn'])||place.subEn;
+    place.url=node.href||node.url||place.url;
+  });
+  build();
 }
 
 // entrance: center-out bloom (base stays visible; gated on visibility so it can never stick transparent)
@@ -212,6 +297,10 @@ addEventListener('storage',e=>{ if(e.key===LS_KEY && (e.newValue==='zh'||e.newVa
 
 // initial paint
 build();
+fetch(NETWORK_API,{headers:{Accept:'application/json'}})
+  .then(response=>response.ok?response.json():Promise.reject(new Error('network data unavailable')))
+  .then(applyNetworkData)
+  .catch(()=>{/* audited local fallback stays visible */});
 if(document.visibilityState==='visible'){ bloomIn(); }
 else { document.addEventListener('visibilitychange',function once(){ if(document.visibilityState==='visible'){bloomIn();document.removeEventListener('visibilitychange',once);} }); }
 
