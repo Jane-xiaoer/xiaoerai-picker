@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳奇物室 · 关于我(B·密室探索)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#ece2c8;--warm:#e3d2a8;--deep:#c8b488;--fold:#a18a5a;--ink:#2e1e10;--soft:#4a2f18;--faint:#6a4a28;--red:#8a2a18;--glow:#f4d68a}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#0a0806;font-family:'EB Garamond',Georgia,serif;color:var(--ink);
+  -webkit-font-smoothing:antialiased;user-select:none;cursor:default}
+#app{position:fixed;inset:0;overflow:hidden;background:#0a0806}
+
+/* parallax layer = the image box itself (aspect-locked, cover-emulated at 106% overscan)
+   so hotspots positioned in % map exactly onto image pixels regardless of viewport crop */
+.parallax{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:calc(100vh * 1.06 * 2400 / 1792); height:calc(100vh * 1.06);
+  transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+@media (min-aspect-ratio:2400/1792){
+  .parallax{width:calc(100vw * 1.06); height:calc(100vw * 1.06 * 1792 / 2400)}
+}
+.scene{position:absolute;inset:0;background-image:url('renders/room-B-perspective.jpg');
+  background-size:100% 100%;background-position:center;filter:brightness(.5) saturate(.7);
+  transition:filter 1.6s ease}
+.lit .scene{filter:brightness(1) saturate(1)}
+.vignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 74% 68% at 50% 46%,transparent 42%,rgba(20,10,4,.28) 80%,rgba(8,5,2,.6) 100%)}
+
+/* ---- hotspots ---- */
+.spot{position:absolute;transform:translate(-50%,-50%);background:transparent;border:none;padding:0;
+  cursor:pointer;opacity:0;pointer-events:none;transition:opacity .8s ease}
+.lit .spot{opacity:1;pointer-events:auto}
+.spot .ring{position:absolute;left:50%;top:50%;width:100%;height:100%;transform:translate(-50%,-50%);
+  border-radius:50%;opacity:0;transition:opacity .45s ease;
+  background:radial-gradient(ellipse at center,rgba(244,214,138,.42),rgba(244,214,138,.12) 55%,transparent 72%);
+  box-shadow:0 0 0 1px rgba(46,30,16,.0)}
+.spot:hover .ring{opacity:1}
+.spot .lbl{position:absolute;left:50%;bottom:100%;transform:translateX(-50%) translateY(6px);
+  white-space:nowrap;opacity:0;transition:opacity .3s ease,transform .3s ease;pointer-events:none;
+  background:var(--paper);border:1.4px solid var(--ink);border-radius:3px;padding:5px 12px;
+  box-shadow:0 4px 14px rgba(10,6,2,.4)}
+.spot:hover .lbl{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.spot .lbl .zh{font-family:'Noto Serif SC',serif;font-weight:700;font-size:14px;color:var(--ink)}
+.spot .lbl .en{font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.22em;color:var(--faint);margin-left:7px}
+.spot .dot{position:absolute;left:50%;top:100%;transform:translate(-50%,4px);width:6px;height:6px;border-radius:50%;
+  background:var(--red);opacity:0;transition:opacity .3s}
+.spot.found .dot{opacity:.9}
+
+/* ---- intro ---- */
+.intro{position:absolute;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:opacity 1s ease}
+.intro.gone{opacity:0;pointer-events:none}
+.intro .ttl{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(30px,5vw,52px);
+  color:var(--paper);text-shadow:0 2px 20px rgba(0,0,0,.7)}
+.intro .hint{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.32em;color:rgba(236,226,200,.82);
+  margin-top:18px;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* ---- chrome ---- */
+.chrome{position:absolute;left:0;right:0;top:22px;text-align:center;z-index:6;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.lit .chrome{opacity:1}
+.chrome .t{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:30px;color:var(--paper);text-shadow:0 2px 12px rgba(0,0,0,.65)}
+.chrome .s{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.4em;color:rgba(236,226,200,.8);margin-top:5px}
+.counter{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:6;opacity:0;transition:opacity 1s ease;
+  font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.24em;color:rgba(236,226,200,.85);text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.lit .counter{opacity:.95}
+.counter b{color:var(--glow);font-weight:400}
+.navbtn{position:absolute;z-index:7;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.2em;
+  color:var(--paper);background:rgba(20,12,6,.5);border:1.2px solid rgba(236,226,200,.5);padding:8px 13px;border-radius:2px;
+  cursor:pointer;opacity:0;transition:opacity 1s ease,background .2s;backdrop-filter:blur(2px)}
+.lit .navbtn{opacity:1}
+.navbtn:hover{background:var(--ink)}
+#toindex{right:22px;top:22px}
+#tohome{left:22px;top:22px}
+
+/* ---- panel ---- */
+.scrim{position:fixed;inset:0;z-index:20;background:rgba(15,9,4,.5);opacity:0;pointer-events:none;transition:opacity .4s;backdrop-filter:blur(2px)}
+.scrim.open{opacity:1;pointer-events:auto}
+.panel{position:fixed;left:50%;bottom:0;transform:translate(-50%,102%);z-index:21;width:min(720px,94vw);
+  background:var(--paper);border:2px solid var(--ink);border-bottom:none;border-radius:12px 12px 0 0;padding:26px 30px 34px;
+  box-shadow:0 -18px 60px rgba(10,6,2,.6);transition:transform .5s cubic-bezier(.6,.02,.2,1)}
+.panel.open{transform:translate(-50%,0)}
+.panel::before{content:"";position:absolute;left:50%;top:12px;transform:translateX(-50%);width:54px;height:5px;border-radius:3px;background:var(--fold)}
+.panel .roman{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--red);letter-spacing:.1em}
+.panel h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:29px;margin:.12em 0 .1em}
+.panel .en{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.32em;color:var(--faint);margin-bottom:13px}
+.panel .desc{font-size:16px;line-height:1.7;color:var(--soft);max-width:60ch;margin-bottom:16px}
+.panel .items{display:flex;flex-direction:column;gap:0}
+.panel a.item,.panel span.item{display:flex;align-items:baseline;gap:12px;text-decoration:none;padding:11px 8px;
+  border-top:1px solid rgba(46,30,16,.16);color:var(--ink);transition:background .18s,padding-left .18s}
+.panel a.item:hover{background:rgba(46,30,16,.06);padding-left:16px}
+.panel .item .idx{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--red);min-width:26px}
+.panel .item .nm{font-family:'Noto Serif SC',serif;font-weight:500;font-size:16.5px}
+.panel .item .u{font-family:'Special Elite',monospace;font-size:11px;color:var(--faint);letter-spacing:.03em;margin-left:auto}
+.panel .item .soon{font-family:'Special Elite',monospace;font-size:10px;color:var(--paper);background:var(--faint);padding:2px 7px;border-radius:2px;letter-spacing:.08em;margin-left:auto}
+.panel .close{position:absolute;right:18px;top:15px;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.18em;color:var(--faint);cursor:pointer;padding:6px 8px}
+.panel .close:hover{color:var(--red)}
+.credit{position:fixed;right:10px;bottom:7px;z-index:5;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(236,226,200,.35)}
+</style></head>
+<body>
+<div id="app">
+  <div class="parallax" id="plx">
+    <div class="scene"></div>
+    <!-- hotspots: left/top = CENTER of the furniture, w/h = hit area, in % of parallax layer -->
+    <button class="spot" data-key="fm"      style="left:10%;top:55%;width:17%;height:24%"><span class="ring"></span><span class="lbl"><span class="zh">留声机</span><span class="en">小耳FM</span></span><span class="dot"></span></button>
+    <button class="spot" data-key="museum"  style="left:12%;top:80%;width:22%;height:26%"><span class="ring"></span><span class="lbl"><span class="zh">抽屉柜</span><span class="en">馆藏 · 七个馆</span></span><span class="dot"></span></button>
+    <button class="spot" data-key="about"   style="left:50%;top:64%;width:11%;height:14%"><span class="ring"></span><span class="lbl"><span class="zh">床头日记</span><span class="en">ABOUT ME</span></span><span class="dot"></span></button>
+    <button class="spot" data-key="accounts" style="left:63%;top:46%;width:17%;height:46%"><span class="ring"></span><span class="lbl"><span class="zh">书架</span><span class="en">我在哪 · FIND ME</span></span><span class="dot"></span></button>
+    <button class="spot" data-key="contact" style="left:82%;top:80%;width:26%;height:28%"><span class="ring"></span><span class="lbl"><span class="zh">写字台</span><span class="en">联系我 · CONTACT</span></span><span class="dot"></span></button>
+    <button class="spot" data-key="works"   style="left:87%;top:32%;width:24%;height:42%"><span class="ring"></span><span class="lbl"><span class="zh">作品墙</span><span class="en">THE WORKS</span></span><span class="dot"></span></button>
+    <div class="vignette"></div>
+  </div>
+
+  <div class="chrome"><div class="t">奇物室 · The Cabinet-Room</div><div class="s">摸一摸屋里的东西 · POKE AROUND</div></div>
+  <button class="navbtn" id="tohome">← 小耳主站</button>
+  <button class="navbtn" id="toindex">关系图 · INDEX ↗</button>
+  <div class="counter">发现 <b id="cfound">0</b> / 6 处机关</div>
+
+  <div class="intro" id="intro">
+    <div class="ttl">Xiaoer's Chamber</div>
+    <div class="hint">轻触屋子,让灯亮起来 · TOUCH TO LIGHT</div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="panel" id="panel">
+  <span class="close" id="pclose">CLOSE ✕</span>
+  <div class="roman" id="proman"></div><h2 id="ptitle"></h2><div class="en" id="pen"></div>
+  <div class="desc" id="pdesc"></div><div class="items" id="pitems"></div>
+</div>
+<div class="credit">CONCEPT · B · 密室探索</div>
+
+<script>
+const DATA={
+  works:{roman:'作品 / 网站',title:'作品墙',en:'THE WORKS',
+    desc:'一整面墙,每个框是一件做出来的东西。这一面是 xiaoerai 工具·内容线 —— 每框以后嵌真截图,框下一行小字。',
+    items:[{nm:'弹药库 · 350+ 工具墙',u:'tools.xiaoerai.xyz',href:'https://tools.xiaoerai.xyz'},
+      {nm:'鲁班箱 · 工作箱',u:'workbox.xiaoerai.xyz',href:'https://workbox.xiaoerai.xyz'},
+      {nm:'走马灯 · AI 视频作品',u:'video.xiaoerai.xyz',href:'https://video.xiaoerai.xyz'},
+      {nm:'百物匣 · 周边小店',u:'store.xiaoerai.xyz',href:'https://store.xiaoerai.xyz'},
+      {nm:'Omia · Open Anything',u:'xiaoeromia.com',href:'https://xiaoeromia.com'},
+      {nm:'小耳艺术站',u:'xiaoer-art.com',href:'https://xiaoer-art.com'},
+      {nm:'全站关系图 · 索引',u:'tools.xiaoerai.xyz/me',href:'https://tools.xiaoerai.xyz/me'}]},
+  museum:{roman:'馆藏',title:'抽屉柜 · 七个馆',en:'THE CABINET · xiaoercamera',
+    desc:'一柜子抽屉,一屉一个馆 —— xiaoercamera.xyz 馆藏线。拉开就进馆。',
+    items:[{nm:'馆藏总站',u:'xiaoercamera.xyz',href:'https://xiaoercamera.xyz'},
+      {nm:'音乐馆 · 小耳FM',u:'fm.xiaoercamera.xyz',href:'https://fm.xiaoercamera.xyz'},
+      {nm:'相机馆',u:'camera.xiaoercamera.xyz',href:'https://camera.xiaoercamera.xyz'},
+      {nm:'城市馆',u:'city.xiaoercamera.xyz',href:'https://city.xiaoercamera.xyz'},
+      {nm:'跳舞馆',u:'dance.xiaoercamera.xyz',href:'https://dance.xiaoercamera.xyz'},
+      {nm:'居家馆',u:'home.xiaoercamera.xyz',href:'https://home.xiaoercamera.xyz'},
+      {nm:'弹珠馆',u:'marbles.xiaoercamera.xyz',href:'https://marbles.xiaoercamera.xyz'},
+      {nm:'肖像馆',u:'portrait.xiaoercamera.xyz',href:'https://portrait.xiaoercamera.xyz'}]},
+  accounts:{roman:'我在哪',title:'书架',en:'WHERE TO FIND ME',
+    desc:'分行分排的书,每本书脊是一个号 / 平台 / 开源。架下一行小字注明。（FB / TikTok / IG 老号按总表标记不上墙）',
+    items:[{nm:'X · Twitter',u:'@xiaoerzhan',href:'https://x.com/xiaoerzhan'},
+      {nm:'小红书 · 小耳朵',u:'xiaohongshu',href:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
+      {nm:'微信公众号 · EARS',u:'weixin',href:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
+      {nm:'Instagram',u:'@xiaoerzhan',href:'https://www.instagram.com/xiaoerzhan/'},
+      {nm:'B 站',u:'UID 18947646',href:'https://space.bilibili.com/18947646'},
+      {nm:'GitHub · 开源',u:'Jane-xiaoer',href:'https://github.com/Jane-xiaoer'},
+      {nm:'视频号 · 小耳 Art',u:'待接二维码',soon:true}]},
+  contact:{roman:'联系我',title:'写字台',en:'CORRESPONDENCE',
+    desc:'桌上摊着信纸和名片 —— 想直接找我,就走这里。微信可上二维码。',
+    items:[{nm:'微信 · xiaoer-zhan',u:'二维码待嵌',soon:true},
+      {nm:'邮箱',u:'xiaoerzhan@gmail.com',href:'mailto:xiaoerzhan@gmail.com'}]},
+  fm:{roman:'小耳FM',title:'留声机',en:'THE PHONOGRAPH',
+    desc:'摇一下,放一首。1058 首豆瓣红心,一座会画画的音乐馆 —— 也是馆藏里我最偏爱的一间。',
+    items:[{nm:'小耳FM · 音乐馆',u:'fm.xiaoercamera.xyz',href:'https://fm.xiaoercamera.xyz'},
+      {nm:'能找到我 · 3D 星图',u:'fm.xiaoercamera.xyz/me',href:'https://fm.xiaoercamera.xyz/me'}]},
+  about:{roman:'关于我',title:'床头的日记',en:'ABOUT ME',
+    desc:'床头柜上摊开一本日记（不是遗照头像）—— 小耳,独立创作者,做 AI 视频 / 工具 / 音乐,习惯把每个想法养成一间能走进去的房间。',
+    items:[{nm:'全站关系图 · 我的全貌',u:'tools.xiaoerai.xyz/me',href:'https://tools.xiaoerai.xyz/me'},
+      {nm:'X · 日常在这',u:'@xiaoerzhan',href:'https://x.com/xiaoerzhan'}]}
+};
+
+const app=document.getElementById('app'),plx=document.getElementById('plx'),intro=document.getElementById('intro');
+let lit=false;
+function light(){ if(lit)return; lit=true; app.classList.add('lit'); intro.classList.add('gone'); }
+intro.addEventListener('click',light);
+
+/* parallax */
+let tx=0,ty=0;
+window.addEventListener('mousemove',e=>{
+  const dx=(e.clientX/window.innerWidth-.5), dy=(e.clientY/window.innerHeight-.5);
+  tx=-dx*26; ty=-dy*20;
+  plx.style.transform=`translate(calc(-50% + ${tx}px),calc(-50% + ${ty}px))`;
+});
+
+/* discovery + panel */
+const found=new Set(),counter=document.querySelector('.counter');
+function mark(k,el){ if(found.has(k))return; found.add(k); el.classList.add('found');
+  document.getElementById('cfound').textContent=found.size;
+  if(found.size===6) counter.innerHTML='六处机关皆已寻得 · 奇物室已通透 ✦'; }
+document.querySelectorAll('.spot').forEach(s=>s.addEventListener('click',()=>{ if(!lit){light();return;} mark(s.dataset.key,s); openPanel(s.dataset.key); }));
+
+const scrim=document.getElementById('scrim'),panel=document.getElementById('panel');
+function openPanel(key){ const d=DATA[key]; if(!d)return;
+  proman.textContent=d.roman; ptitle.textContent=d.title; pen.textContent=d.en; pdesc.textContent=d.desc;
+  const box=document.getElementById('pitems'); box.innerHTML='';
+  d.items.forEach((it,i)=>{ const idx=it.idx||String(i+1).padStart(2,'0');
+    if(it.soon){ const s=document.createElement('span'); s.className='item';
+      s.innerHTML=`<span class="idx">${idx}</span><span class="nm">${it.nm}</span><span class="soon">${it.u}</span>`; box.appendChild(s);
+    } else { const a=document.createElement('a'); a.className='item'; a.href=it.href; a.target='_blank'; a.rel='noopener';
+      a.innerHTML=`<span class="idx">${idx}</span><span class="nm">${it.nm}</span><span class="u">${it.u} ↗</span>`; box.appendChild(a); } });
+  scrim.classList.add('open'); panel.classList.add('open');
+}
+function closePanel(){ scrim.classList.remove('open'); panel.classList.remove('open'); }
+scrim.addEventListener('click',closePanel); document.getElementById('pclose').addEventListener('click',closePanel);
+document.getElementById('toindex').addEventListener('click',()=>window.open('https://tools.xiaoerai.xyz/me','_blank'));
+document.getElementById('tohome').addEventListener('click',()=>window.open('https://xiaoerai.xyz','_blank'));
+window.addEventListener('keydown',e=>{ if(e.key==='Escape')closePanel(); });
+</script>
+</body></html>

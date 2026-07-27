@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳的世界 · 复古地图三选一</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#ece2c8;--warm:#e3d2a8;--deep:#c8b488;--ink:#2e1e10;--soft:#4a2f18;--faint:#6a4a28;--red:#8a2a18}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(ellipse 90% 70% at 50% 26%,var(--paper),var(--deep));color:var(--ink);
+  font-family:'Noto Serif SC','EB Garamond',serif;padding:40px 26px 80px;min-height:100vh}
+header{text-align:center;margin-bottom:26px}
+h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:42px}
+.sub{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.36em;color:var(--soft);margin-top:8px}
+.rule{width:min(560px,72vw);height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,var(--faint) 20%,var(--faint) 80%,transparent)}
+.rec{max-width:1000px;margin:18px auto 0;text-align:center;font-size:15.5px;line-height:1.75;color:var(--soft)}
+.rec b{color:var(--red)}
+.grid{display:grid;grid-template-columns:1fr;gap:30px;max-width:1220px;margin:40px auto 0}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:8px;overflow:hidden;box-shadow:0 12px 40px rgba(20,10,4,.32)}
+.card img{width:100%;display:block;border-bottom:1.4px solid var(--ink);cursor:zoom-in}
+.meta{padding:16px 22px 20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.meta .l{flex:0 0 auto}
+.tag{display:inline-block;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.2em;background:var(--ink);color:var(--paper);padding:3px 10px;border-radius:2px;margin-bottom:8px}
+.card h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px}
+.en{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.26em;color:var(--faint);margin-top:2px}
+.meta p{flex:1;min-width:260px;font-size:15px;line-height:1.7;color:var(--soft)}
+.meta p b{color:var(--ink)}
+.map{max-width:1000px;margin:44px auto 0;background:rgba(46,30,16,.05);border:1px solid var(--faint);border-radius:8px;padding:22px 26px}
+.map h3{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;margin-bottom:12px}
+.map table{width:100%;border-collapse:collapse;font-size:14.5px}
+.map td{padding:8px 6px;border-top:1px solid rgba(46,30,16,.15);vertical-align:top}
+.map td:first-child{white-space:nowrap;font-weight:700;color:var(--ink);width:180px}
+.map td:last-child{color:var(--soft)}
+.note{max-width:1000px;margin:30px auto 0;font-size:13.5px;line-height:1.7;color:var(--soft);border-top:1px solid var(--faint);padding-top:18px}
+.note b{color:var(--ink)}
+#lb{position:fixed;inset:0;background:rgba(15,9,4,.92);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}
+#lb img{max-width:97vw;max-height:95vh;border:2px solid var(--paper)}
+</style></head>
+<body>
+<header>
+  <h1>小耳的世界 · 一张复古地图</h1>
+  <div class="sub">VINTAGE MAP · YOUR WHOLE WORLD ON ONE CHART · PICK ONE</div>
+  <div class="rule"></div>
+  <p class="rec">回到"一张画到位的图 + 叠你的真信息"这条路。三张古地图,严格你主站的铜版画皮,<b>几乎没有乱码字、还留了空白绶带/卷轴放标题</b>——正好当底图,你的站点/账号/联系方式后面我用真文字和点击热区叠上去。<br><b>我的偏好:B</b>(最清爽、有大图例牌、路径带停靠点最好导航);想要最有冒险感选 A,想要最"童话小岛·一个家"选 C。</p>
+</header>
+
+<div class="grid">
+  <div class="card"><img src="maps/map-A-treasure.jpg" alt="A 藏宝图">
+    <div class="meta"><div class="l"><span class="tag">地图 A</span><h2>藏宝图</h2><div class="en">TREASURE MAP</div></div>
+      <p>破边烧焦羊皮纸、最有<b>探险/藏宝</b>气氛,双罗盘、龙与海怪、中央大陆 + 右侧群岛。最moody最戏剧化,当"关于我"英雄图很抓人。</p></div></div>
+  <div class="card"><img src="maps/map-B-atlas.jpg" alt="B 古地图大陆">
+    <div class="meta"><div class="l"><span class="tag">地图 B · 我略偏</span><h2>古世界大陆</h2><div class="en">OLD-WORLD ATLAS</div></div>
+      <p>最<b>清爽优雅</b>,地标间距舒服、路径上有<b>停靠圆点</b>(做"走一段路"导航天然好用),右下一个<b>大空白图例牌</b>可放标题/图例。分区最清楚,叠信息最好排。</p></div></div>
+  <div class="card"><img src="maps/map-C-fantasy.jpg" alt="C 奇幻海岛">
+    <div class="meta"><div class="l"><span class="tag">地图 C</span><h2>奇幻海岛</h2><div class="en">STORYBOOK ISLE</div></div>
+      <p>最<b>童话·一个家</b>的感觉:整座岛,<b>正中一座大城堡</b>,道路从城堡放射连到各村镇——天然就是"从我出发,路通向我的一切"。charm 最浓。</p></div></div>
+</div>
+
+<div class="map">
+  <h3>你的信息怎么落到地图上(地理 = 分类)</h3>
+  <table>
+    <tr><td>🏰 中心城堡 / 家</td><td>关于我 —— 小耳这个人(点它看全貌 / 日记)</td></tr>
+    <tr><td>🗼 一片塔楼城镇区</td><td>作品 / 网站(弹药库 · 鲁班箱 · 走马灯 · 百物匣 · Omia · 艺术站 · 关系图)</td></tr>
+    <tr><td>⛰ 一条山脉(七座峰)</td><td>xiaoercamera 馆藏七馆(音乐 · 相机 · 城市 · 跳舞 · 居家 · 弹珠 · 肖像)</td></tr>
+    <tr><td>🏝 一串群岛(每岛一号)</td><td>社媒 / 账号(X · 小红书 · 公众号 · IG · B站 · GitHub)—— "社媒群岛"</td></tr>
+    <tr><td>⚓ 港口 / 灯塔</td><td>联系我(微信二维码 · 邮箱)—— 靠岸就能找到我</td></tr>
+    <tr><td>⣿ 虚线航路 / 道路</td><td>把它们连成网(呼应你总表里的"指向"关系)</td></tr>
+  </table>
+</div>
+
+<p class="note">
+<b>说明:</b> 这三张是 2K 底图,选定后我会 ① 出 4K 高清 ② 在对应地标上<b>叠真地名标签(铜版画字体)+ 点击热区</b>,点一处地名进对应的站 ③ 标题/图例填进那块空白绶带 ④ 可选:鼠标悬停地标微微发亮、罗盘/海怪轻微浮动,让地图"活"一点(但仍是 2D,不折腾 3D)。<br>· 点任意地图放大看细节。
+</p>
+
+<div id="lb"><img src="" alt=""></div>
+<script>
+const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+document.querySelectorAll('.card img').forEach(i=>i.addEventListener('click',()=>{lbi.src=i.src;lb.style.display='flex';}));
+lb.addEventListener('click',()=>lb.style.display='none');
+</script>
+</body></html>

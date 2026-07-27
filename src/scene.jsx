@@ -155,10 +155,13 @@ function Inkwell() {
 function PlateTitle({ lampOn, drawerOpen }) {
   const lang = window.useLang();
   const title = drawerOpen ? window.T.cabinetOpen[lang] : window.T.deskTitle[lang];
-  const fig = drawerOpen ? 'PL. II — INTERIOR' : 'PL. I — ARRANGEMENT';
-  const state = lampOn ? 'LIT' : 'UNLIT';
+  const figEn = drawerOpen ? 'PL. II — INTERIOR' : 'PL. I — ARRANGEMENT';
+  const figZh = drawerOpen ? 'PL. II · 室内' : 'PL. I · 安排';
+  const stateEn = lampOn ? 'LIT' : 'UNLIT';
+  const stateZh = lampOn ? '灯光' : '未点燃';
   return (
     <div className="plate-title">
+      <div className="plate-eyebrow">— FOLIO OF CURIOSITIES · 珍奇收藏集 —</div>
       <div className="orn-row top">
         <span className="orn-rule"/>
         <span className="orn-fleuron">❦</span>
@@ -168,7 +171,8 @@ function PlateTitle({ lampOn, drawerOpen }) {
       <div className="orn-row bottom">
         <span className="orn-rule with-caps"/>
       </div>
-      <div className="fig">{fig} · {state}</div>
+      <div className="fig">{figEn} · {stateEn}</div>
+      <div className="fig fig-zh">{figZh} · {stateZh}</div>
     </div>
   );
 }

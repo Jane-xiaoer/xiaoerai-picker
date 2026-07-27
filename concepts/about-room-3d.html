@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳奇物室 · 关于我(真 3D 可走进)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#ece2c8;--warm:#e3d2a8;--ink:#2e1e10;--soft:#4a2f18;--faint:#6a4a28;--red:#8a2a18}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#0a0806;font-family:'Noto Serif SC',serif;color:var(--paper);cursor:grab}
+body.dragging{cursor:grabbing}
+#c{display:block;width:100%;height:100%}
+.filmgrain{position:fixed;inset:0;z-index:2;pointer-events:none;mix-blend-mode:multiply;
+  background:
+    radial-gradient(ellipse 76% 72% at 50% 47%,transparent 44%,rgba(20,10,4,.36) 82%,rgba(8,4,2,.62) 100%),
+    repeating-linear-gradient(0deg,rgba(46,30,16,.05) 0 1px,transparent 1px 3px);}
+/* HUD */
+.hud{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:5;text-align:center;
+  font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.18em;color:rgba(236,226,200,.8);
+  text-shadow:0 1px 6px rgba(0,0,0,.7);pointer-events:none;transition:opacity .6s}
+.title{position:fixed;left:0;right:0;top:22px;text-align:center;z-index:5;pointer-events:none;opacity:0;transition:opacity 1.2s}
+.title.show{opacity:1}
+.title .t{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:30px;color:var(--paper);text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.title .s{font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.4em;color:rgba(236,226,200,.75);margin-top:4px}
+/* focused caption card */
+.card{position:fixed;left:50%;bottom:64px;transform:translate(-50%,20px);z-index:6;min-width:280px;max-width:min(560px,92vw);
+  background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:16px 22px 18px;color:var(--ink);
+  box-shadow:0 14px 44px rgba(10,6,2,.55);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s}
+.card.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.card .rn{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--red);font-size:13px}
+.card h3{font-family:'Noto Serif SC',serif;font-weight:700;font-size:21px;margin:2px 0 4px}
+.card p{font-size:14px;line-height:1.55;color:var(--soft);margin-bottom:12px}
+.card a{display:inline-flex;align-items:center;gap:8px;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.06em;
+  text-decoration:none;color:var(--paper);background:var(--ink);padding:9px 16px;border-radius:3px}
+.card a:hover{background:var(--red)}
+.card .x{position:absolute;right:12px;top:9px;font-family:'Special Elite',monospace;font-size:11px;color:var(--faint);cursor:pointer}
+.card .x:hover{color:var(--red)}
+#loading{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#0a0806;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:26px;color:var(--paper);transition:opacity 1s}
+#loading.gone{opacity:0;pointer-events:none}
+.credit{position:fixed;right:10px;bottom:7px;z-index:5;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(236,226,200,.35)}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<div class="filmgrain"></div>
+<div id="loading">正在点亮奇物室…</div>
+<div class="title" id="title"><div class="t">奇物室 · Xiaoer's Chamber</div><div class="s">走进来,四处看看 · WALK IN</div></div>
+<div class="hud" id="hud">拖动看 · W A S D 走动 · 滚轮推拉 · 点墙上的画走近</div>
+<div class="credit">CONCEPT · 真 3D · v1</div>
+
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script>
+const WORKS=[
+  {zh:'弹药库',sub:'350+ 工具墙',url:'https://tools.xiaoerai.xyz'},
+  {zh:'鲁班箱',sub:'工作箱 · 开源工具',url:'https://workbox.xiaoerai.xyz'},
+  {zh:'走马灯',sub:'AI 视频作品',url:'https://video.xiaoerai.xyz'},
+  {zh:'百物匣',sub:'周边小店',url:'https://store.xiaoerai.xyz'},
+  {zh:'Omia',sub:'Open Anything',url:'https://xiaoeromia.com'},
+  {zh:'艺术站',sub:'xiaoer-art.com',url:'https://xiaoer-art.com'},
+  {zh:'关系图',sub:'全站索引 · 我的全貌',url:'https://tools.xiaoerai.xyz/me'},
+];
+const ACCOUNTS=[
+  {zh:'X',sub:'@xiaoerzhan',url:'https://x.com/xiaoerzhan'},
+  {zh:'小红书',sub:'小耳朵',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
+  {zh:'公众号',sub:'EARS · 小耳',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
+  {zh:'Instagram',sub:'@xiaoerzhan',url:'https://www.instagram.com/xiaoerzhan/'},
+  {zh:'B 站',sub:'UID 18947646',url:'https://space.bilibili.com/18947646'},
+  {zh:'GitHub',sub:'Jane-xiaoer · 开源',url:'https://github.com/Jane-xiaoer'},
+];
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color('#161009');
+scene.fog=new THREE.Fog('#161009',14,30);
+const camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,0.05,100);
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.92;
+
+/* ---------- canvas textures (paper / hatch / caption / picture) ---------- */
+function paperTex(base, hatch){
+  const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d');
+  x.fillStyle=base; x.fillRect(0,0,256,256);
+  // foxing spots
+  for(let i=0;i<80;i++){x.fillStyle=`rgba(120,80,40,${Math.random()*0.05})`;const r=Math.random()*3+0.5;x.beginPath();x.arc(Math.random()*256,Math.random()*256,r,0,7);x.fill();}
+  if(hatch){x.strokeStyle='rgba(46,30,16,0.10)';x.lineWidth=1;for(let i=-256;i<256;i+=6){x.beginPath();x.moveTo(i,0);x.lineTo(i+256,256);x.stroke();}}
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; return t;
+}
+function pictureTex(zh){
+  const c=document.createElement('canvas'); c.width=340;c.height=440; const x=c.getContext('2d');
+  x.fillStyle='#ece2c8'; x.fillRect(0,0,340,440);
+  x.strokeStyle='rgba(46,30,16,0.12)';x.lineWidth=1;for(let i=-440;i<440;i+=7){x.beginPath();x.moveTo(i,0);x.lineTo(i+440,440);x.stroke();}
+  // a faint framed motif + the work name as placeholder "engraving"
+  x.strokeStyle='#2e1e10';x.lineWidth=3;x.strokeRect(24,24,292,392);
+  x.fillStyle='#2e1e10';x.textAlign='center';
+  x.font='700 62px "Noto Serif SC",serif'; x.fillText(zh,170,240);
+  x.font='italic 22px "Cormorant Garamond",serif'; x.fillStyle='#8a2a18'; x.fillText('· 小耳奇物 ·',170,300);
+  return new THREE.CanvasTexture(c);
+}
+function captionTex(zh,sub){
+  const c=document.createElement('canvas'); c.width=512;c.height=150; const x=c.getContext('2d');
+  x.fillStyle='#ece2c8'; x.fillRect(0,0,512,150);
+  x.strokeStyle='#2e1e10';x.lineWidth=3;x.strokeRect(4,4,504,142);
+  x.fillStyle='#2e1e10';x.textAlign='center';
+  x.font='700 46px "Noto Serif SC",serif'; x.fillText(zh,256,66);
+  x.fillStyle='#6a4a28'; x.font='24px "Special Elite",monospace'; x.fillText(sub,256,110);
+  return new THREE.CanvasTexture(c);
+}
+
+const RW=14, RD=10, RH=4; // room width(x), depth(z), height(y)
+const paperMat=new THREE.MeshStandardMaterial({map:paperTex('#e3d2a8',true),color:'#efe6cf',roughness:1,metalness:0});
+const wallMat=new THREE.MeshStandardMaterial({map:paperTex('#e6d8b4',false),color:'#efe6cf',roughness:1});
+const floorMat=new THREE.MeshStandardMaterial({map:paperTex('#c8b488',true),color:'#d8c49a',roughness:1});
+const woodMat=new THREE.MeshStandardMaterial({map:paperTex('#b89a68',true),color:'#c8b488',roughness:.9});
+const inkMat=new THREE.LineBasicMaterial({color:'#2e1e10'});
+
+function edged(geo,mat,px,py,pz){
+  const g=new THREE.Group();
+  const m=new THREE.Mesh(geo,mat); m.castShadow=true; m.receiveShadow=true; g.add(m);
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),inkMat); g.add(e);
+  g.position.set(px||0,py||0,pz||0); scene.add(g); return g;
+}
+
+/* ---------- room shell ---------- */
+// floor
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(RW,RD),floorMat);
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+// ceiling
+const ceil=new THREE.Mesh(new THREE.PlaneGeometry(RW,RD),wallMat);
+ceil.rotation.x=Math.PI/2; ceil.position.y=RH; scene.add(ceil);
+// walls (planes facing inward)
+function wall(w,h,px,py,pz,ry){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),wallMat);m.position.set(px,py,pz);m.rotation.y=ry;m.receiveShadow=true;scene.add(m);return m;}
+wall(RW,RH,0,RH/2,-RD/2,0);            // back  (z-)
+wall(RW,RH,0,RH/2,RD/2,Math.PI);       // front (z+)
+wall(RD,RH,-RW/2,RH/2,0,Math.PI/2);    // left  (x-)
+wall(RD,RH,RW/2,RH/2,0,-Math.PI/2);    // right (x+)
+// baseboard + crown as thin ink boxes along walls (line feel)
+[[-RD/2,0.08],[RD/2,0.08],[-RD/2,RH-0.08],[RD/2,RH-0.08]];
+
+/* ---------- lighting ---------- */
+scene.add(new THREE.AmbientLight('#f2e3c4',0.34));
+const hemi=new THREE.HemisphereLight('#e8d6ad','#3a2814',0.30); scene.add(hemi);
+// warm hanging lamp
+const lamp=new THREE.PointLight('#ffcf7a',0.95,18,1.7); lamp.position.set(-1.5,3.1,1.5); lamp.castShadow=true; scene.add(lamp);
+const lampBulb=edged(new THREE.ConeGeometry(0.5,0.5,16,1,true),new THREE.MeshStandardMaterial({color:'#f0e2b8',emissive:'#ffcf7a',emissiveIntensity:.5,side:THREE.DoubleSide}),-1.5,3.15,1.5);
+const cord=new THREE.Mesh(new THREE.CylinderGeometry(0.01,0.01,0.85),inkMat.clone&&new THREE.MeshBasicMaterial({color:'#2e1e10'})); cord.position.set(-1.5,3.55,1.5); scene.add(cord);
+// window glow on back wall
+const win=new THREE.Mesh(new THREE.PlaneGeometry(1.7,2.2),new THREE.MeshStandardMaterial({color:'#efe6cf',emissive:'#f6ead0',emissiveIntensity:.5}));
+win.position.set(2.4,2.1,-RD/2+0.02); scene.add(win);
+edged(new THREE.BoxGeometry(1.9,2.4,0.08),woodMat,2.4,2.1,-RD/2+0.05);
+const winLight=new THREE.RectAreaLight?null:null; // (RectAreaLight needs extra; skip)
+
+/* ---------- furniture (simple boxes + ink edges) ---------- */
+// bed (back-left)
+edged(new THREE.BoxGeometry(2.2,0.5,3.4),woodMat,-4.6,0.25,-2.6);              // frame
+edged(new THREE.BoxGeometry(2.0,0.35,3.0),new THREE.MeshStandardMaterial({map:paperTex('#e0d0a4',true),color:'#efe6cf',roughness:1}),-4.6,0.62,-2.5); // quilt
+edged(new THREE.BoxGeometry(1.8,0.9,0.15),woodMat,-4.6,0.7,-4.15);             // headboard
+edged(new THREE.BoxGeometry(0.9,0.3,0.5),paperMat,-4.6,0.62,-3.6);             // pillow
+// nightstand (关于我 · 日记) — center-ish, reachable
+const nsGrp=edged(new THREE.BoxGeometry(0.85,0.75,0.7),woodMat,-2.9,0.375,-1.2);
+const diary=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.06,0.36),new THREE.MeshStandardMaterial({map:pictureTex('日记'),color:'#fff'}));
+diary.position.set(-2.9,0.79,-1.2); diary.rotation.x=-0.05; diary.userData={pick:'about'}; scene.add(diary);
+// dresser (馆藏抽屉柜, left-front) with 4 drawer lines
+const dresser=edged(new THREE.BoxGeometry(2.2,1.3,0.9),woodMat,-5.4,0.65,2.6);
+dresser.children[0].userData={pick:'museum'};
+for(let i=0;i<4;i++){const d=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(2.0,0.28,0.02)),inkMat);d.position.set(-5.4,0.25+i*0.31,3.06);scene.add(d);}
+// gramophone (小耳FM) on dresser
+const gramoBox=edged(new THREE.BoxGeometry(0.7,0.4,0.6),woodMat,-5.4,1.5,2.6); gramoBox.children[0].userData={pick:'fm'};
+const horn=new THREE.Mesh(new THREE.ConeGeometry(0.34,0.6,20,1,true),new THREE.MeshStandardMaterial({color:'#8a6028',metalness:.5,roughness:.5,side:THREE.DoubleSide}));
+horn.position.set(-5.0,1.95,2.9); horn.rotation.z=-0.9; horn.rotation.x=0.5; horn.userData={pick:'fm'}; scene.add(horn);
+// writing desk (联系我, right-front)
+const desk=edged(new THREE.BoxGeometry(2.6,0.12,1.1),woodMat,5.0,1.1,2.8); desk.children[0].userData={pick:'contact'};
+edged(new THREE.BoxGeometry(0.12,1.1,0.12),woodMat,3.9,0.55,2.4);edged(new THREE.BoxGeometry(0.12,1.1,0.12),woodMat,6.1,0.55,2.4);
+edged(new THREE.BoxGeometry(0.12,1.1,0.12),woodMat,3.9,0.55,3.2);edged(new THREE.BoxGeometry(0.12,1.1,0.12),woodMat,6.1,0.55,3.2);
+const letter=new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.36),new THREE.MeshStandardMaterial({map:pictureTex('信'),color:'#fff'}));
+letter.rotation.x=-Math.PI/2; letter.position.set(5.0,1.17,2.8); letter.userData={pick:'contact'}; scene.add(letter);
+// bookshelf (书架 · 账号) against back wall right side
+const shelf=edged(new THREE.BoxGeometry(2.6,2.8,0.5),woodMat,4.6,1.4,-RD/2+0.3); shelf.children[0].userData={pick:'accounts-shelf'};
+
+/* ---------- picture frames on walls (click to approach) ---------- */
+const pickables=[]; let frameCount=0; // {mesh, data, focus:{pos,look}}
+function makeFrame(item,pos,ry,kind){
+  const g=new THREE.Group(); g.position.copy(pos); g.rotation.y=ry;
+  const fw=1.0, fh=1.28;
+  // ink frame border
+  const border=new THREE.Mesh(new THREE.PlaneGeometry(fw+0.12,fh+0.12),new THREE.MeshStandardMaterial({color:'#2e1e10',roughness:1}));
+  g.add(border);
+  // picture
+  const pic=new THREE.Mesh(new THREE.PlaneGeometry(fw,fh),new THREE.MeshStandardMaterial({map:pictureTex(item.zh),color:'#fff',roughness:1}));
+  pic.position.z=0.02; g.add(pic);
+  // caption below
+  const cap=new THREE.Mesh(new THREE.PlaneGeometry(fw+0.1,(fw+0.1)*150/512),new THREE.MeshStandardMaterial({map:captionTex(item.zh,item.sub),color:'#fff',transparent:true}));
+  cap.position.set(0,-(fh/2)-0.28,0.02); g.add(cap);
+  scene.add(g);
+  // focus point: stand 2.3m in front of frame, at frame height ~1.6
+  const n=new THREE.Vector3(0,0,1).applyEuler(new THREE.Euler(0,ry,0)); // frame normal (into room)
+  const fpos=new THREE.Vector3(pos.x+n.x*2.3, 1.55, pos.z+n.z*2.3);
+  const look=new THREE.Vector3(pos.x,1.55,pos.z);
+  const ud={data:item,focus:{pos:fpos,look},kind:kind||'work',id:'f'+(frameCount++)};
+  border.userData=pic.userData=cap.userData=ud;
+  pickables.push(pic,border,cap);
+  return g;
+}
+// RIGHT wall = works (7 frames), facing -x
+const rx=RW/2-0.06;
+WORKS.forEach((w,i)=>{const z=-3.9+i*1.3; makeFrame(w,new THREE.Vector3(rx,1.9,z),-Math.PI/2);});
+// LEFT wall = accounts (6 smaller frames), facing +x
+const lx=-RW/2+0.06;
+ACCOUNTS.forEach((a,i)=>{const z=-3.4+i*1.3; makeFrame(a,new THREE.Vector3(lx,1.9,z),Math.PI/2,'account');});
+
+/* ---------- controls: drag look + WASD + wheel dolly + click approach ---------- */
+let yaw=Math.PI*0.5, pitch=-0.04; // start looking toward +x-ish (the works wall) ... actually start looking into room
+yaw=0; pitch=0;
+camera.position.set(0,1.6,3.4);
+const keys={};
+addEventListener('keydown',e=>{keys[e.code]=true;});
+addEventListener('keyup',e=>{keys[e.code]=false;});
+let dragging=false,px0=0,py0=0,moved=0,downT=0;
+const cvs=renderer.domElement;
+cvs.addEventListener('mousedown',e=>{dragging=true;moved=0;downT=performance.now();px0=e.clientX;py0=e.clientY;document.body.classList.add('dragging');approach=null;});
+addEventListener('mouseup',e=>{document.body.classList.remove('dragging');
+  const dt=performance.now()-downT;
+  if(dragging && moved<6 && dt<350){ handleClick(e); }
+  dragging=false;});
+addEventListener('mousemove',e=>{ if(!dragging)return; const dx=e.clientX-px0,dy=e.clientY-py0; px0=e.clientX;py0=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
+  yaw-=dx*0.0032; pitch-=dy*0.0032; pitch=Math.max(-1.1,Math.min(1.1,pitch)); approach=null; clearFocus();});
+cvs.addEventListener('wheel',e=>{e.preventDefault(); const f=new THREE.Vector3();camera.getWorldDirection(f); camera.position.addScaledVector(f, -e.deltaY*0.006); clampCam(); approach=null; clearFocus();},{passive:false});
+
+function clampCam(){camera.position.x=Math.max(-RW/2+0.6,Math.min(RW/2-0.6,camera.position.x));camera.position.z=Math.max(-RD/2+0.6,Math.min(RD/2-0.6,camera.position.z));camera.position.y=1.6;}
+
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+let approach=null;               // {pos,look,id,url,zh} while walking to a picture
+let focusedId=null, focusedUrl=null;
+const hud=document.getElementById('hud');
+const HUD_DEFAULT='拖动看 · W A S D 走动 · 滚轮推拉 · 点墙上的画走近';
+function clearFocus(){ if(focusedId!==null){focusedId=null;focusedUrl=null;hud.textContent=HUD_DEFAULT;} }
+function handleClick(e){
+  ndc.x=(e.clientX/innerWidth)*2-1; ndc.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(scene.children,true);
+  for(const h of hits){ const ud=h.object.userData;
+    if(ud&&ud.focus){
+      if(focusedId===ud.id){ window.open(ud.data.url,'_blank','noopener'); }   // already facing it → enter
+      else { approach={pos:ud.focus.pos.clone(),look:ud.focus.look.clone(),id:ud.id,url:ud.data.url,zh:ud.data.zh}; } // walk to it
+      return;
+    }
+  }
+  clearFocus(); // clicked empty space
+}
+
+function tick(){
+  requestAnimationFrame(tick);
+  const spd=0.085; const f=new THREE.Vector3();camera.getWorldDirection(f);f.y=0;f.normalize();
+  const r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,1,0));
+  let moving=false;
+  if(keys['KeyW']||keys['ArrowUp']){camera.position.addScaledVector(f,spd);moving=true;}
+  if(keys['KeyS']||keys['ArrowDown']){camera.position.addScaledVector(f,-spd);moving=true;}
+  if(keys['KeyA']||keys['ArrowLeft']){camera.position.addScaledVector(r,-spd);moving=true;}
+  if(keys['KeyD']||keys['ArrowRight']){camera.position.addScaledVector(r,spd);moving=true;}
+  if(moving){clampCam();approach=null;clearFocus();}
+  // approach tween → walk up and face the picture, then it becomes "focused" (click again to enter)
+  if(approach){
+    camera.position.lerp(approach.pos,0.09);
+    const dir=approach.look.clone().sub(camera.position).normalize();
+    const ty=Math.atan2(-dir.x,-dir.z), tp=Math.asin(Math.max(-1,Math.min(1,dir.y)));
+    yaw+=(ty-yaw)*0.12; pitch+=(tp-pitch)*0.12;
+    if(camera.position.distanceTo(approach.pos)<0.06){
+      focusedId=approach.id; focusedUrl=approach.url;
+      hud.textContent='正对着「'+approach.zh+'」 —— 再点一下进入 ↗';
+      approach=null;
+    }
+  }
+  camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
+  renderer.render(scene,camera);
+}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+// go
+setTimeout(()=>{document.getElementById('loading').classList.add('gone');document.getElementById('title').classList.add('show');
+  setTimeout(()=>document.getElementById('title').classList.remove('show'),4600);},500);
+tick();
+</script>
+</body></html>

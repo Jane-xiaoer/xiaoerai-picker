@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳的世界 · 一张会浮起来的复古地图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#ece2c8;--warm:#e3d2a8;--ink:#2e1e10;--soft:#4a2f18;--faint:#6a4a28;--red:#8a2a18;--gold:#8a6028;--teal:#2a5a4a;--glow:#f4d68a}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#160f08;font-family:'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;user-select:none}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 72% 72% at 50% 46%,#2a1d0f,#100b05)}
+.wrap{position:relative;width:min(100vw,149vh);aspect-ratio:2528/1696}
+.base{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block;
+  filter:saturate(.5) brightness(1.14) contrast(.8)}
+.wash{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 80% 78% at 50% 48%,rgba(236,226,200,.42),rgba(226,210,168,.62))}
+.layer{position:absolute;inset:0;z-index:2;transition:transform .3s ease-out}
+
+/* floating cut-out pieces */
+@keyframes bob{0%,100%{transform:translateY(-.5%)}50%{transform:translateY(-1.5%)}}
+.landmark{position:absolute;cursor:pointer}
+.lift{position:absolute;inset:0;transition:transform .45s cubic-bezier(.34,1.4,.4,1)}
+.floaty{position:absolute;inset:0;animation:bob 5s ease-in-out infinite}
+.sprite{position:absolute;inset:0;width:100%;height:100%;
+  filter:drop-shadow(0 2px 1.5px rgba(20,10,4,.34));transition:filter .4s ease}
+.landmark:hover{z-index:40}
+.landmark:hover .lift{transform:translateY(-3.2%)}
+.landmark:hover .sprite{filter:drop-shadow(0 12px 8px rgba(20,10,4,.5)) brightness(1.08)}
+
+/* always-visible names */
+.label{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;text-align:center;pointer-events:none;
+  transition:transform .3s cubic-bezier(.34,1.5,.4,1)}
+.label .zh{display:block;font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(11px,1.15vw,17px);color:var(--ink);
+  text-shadow:0 0 5px var(--paper),0 0 3px var(--paper),0 0 2px var(--paper),0 1px 1px var(--paper)}
+.label .sub{display:none;font-family:'Special Elite',monospace;font-size:11px;color:var(--faint);letter-spacing:.04em}
+.landmark:hover .label{transform:translateX(-50%) scale(1.14)}
+.landmark:hover .label .zh{color:var(--red)}
+.landmark:hover .label .sub{display:block}
+.landmark.cat-museum:hover .label .zh{color:var(--teal)}
+.landmark.cat-work:hover .label .zh{color:var(--gold)}
+
+/* region + title (engraving, subtle, always on) */
+.region{position:absolute;transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:.66}
+.region .rz{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(13px,1.5vw,24px);color:var(--soft);
+  text-shadow:0 0 6px var(--paper),0 0 3px var(--paper)}
+.region .re{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.28em;color:var(--faint)}
+.title{position:absolute;transform:translate(-50%,-50%) rotate(-1deg);text-align:center;pointer-events:none}
+.title .tz{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(20px,2.4vw,40px);color:var(--ink)}
+.title .te{font-family:'Special Elite',monospace;font-size:clamp(8px,.8vw,13px);letter-spacing:.34em;color:var(--soft)}
+
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse 78% 76% at 50% 48%,transparent 54%,rgba(10,6,2,.46) 100%)}
+.help{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:4;pointer-events:none;
+  font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.2em;color:rgba(236,226,200,.7);text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.credit{position:fixed;right:10px;top:8px;z-index:4;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(236,226,200,.4)}
+</style></head>
+<body>
+<div id="stage">
+  <div class="wrap" id="wrap">
+    <img class="base" src="maps/map-C-fantasy.jpg" alt="">
+    <div class="layer" id="layer"></div>
+  </div>
+</div>
+<div class="vignette"></div>
+<div class="help">每个地标都浮在纸上 · 移上去点它前往</div>
+<div class="credit">CONCEPT · MAP C · 浮起版 v2</div>
+
+<script>
+const MW=2528, MH=1696;
+// x,y,w,h = exact sprite crop rect on the map; lx,ly = label anchor (map px, defaults to landmark center-bottom)
+const D=[
+ {id:'about',   x:1105,y:535, w:360,h:340, zh:'关于我', sub:'小耳 · 独立创作者', url:'https://tools.xiaoerai.xyz/me', cat:'about', ly:760},
+ {id:'contact', x:610, y:875, w:320,h:280, zh:'联系我', sub:'微信 · 邮箱', url:'mailto:xiaoerzhan@gmail.com', cat:'contact', ly:1060},
+ {id:'w_tools', x:570, y:585, w:240,h:230, zh:'弹药库', sub:'350+ 工具', url:'https://tools.xiaoerai.xyz', cat:'work'},
+ {id:'w_workbox',x:945, y:470, w:240,h:230, zh:'鲁班箱', sub:'工作箱', url:'https://workbox.xiaoerai.xyz', cat:'work'},
+ {id:'w_video', x:1320,y:365, w:250,h:230, zh:'走马灯', sub:'AI 视频', url:'https://video.xiaoerai.xyz', cat:'work'},
+ {id:'w_store', x:1595,y:110, w:230,h:210, zh:'百物匣', sub:'周边小店', url:'https://store.xiaoerai.xyz', cat:'work'},
+ {id:'w_omia',  x:1470,y:745, w:240,h:220, zh:'Omia', sub:'Open Anything', url:'https://xiaoeromia.com', cat:'work'},
+ {id:'w_art',   x:1855,y:820, w:240,h:230, zh:'艺术站', sub:'xiaoer-art.com', url:'https://xiaoer-art.com', cat:'work'},
+ {id:'w_map',   x:970, y:965, w:240,h:220, zh:'关系图', sub:'全站索引', url:'https://tools.xiaoerai.xyz/me', cat:'work'},
+ {id:'m_fm',    x:1025,y:190, w:250,h:220, zh:'音乐馆', sub:'小耳FM', url:'https://fm.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_camera',x:1235,y:140, w:250,h:220, zh:'相机馆', sub:'camera', url:'https://camera.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_city',  x:1435,y:205, w:250,h:220, zh:'城市馆', sub:'city', url:'https://city.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_dance', x:1930,y:270, w:240,h:220, zh:'跳舞馆', sub:'dance', url:'https://dance.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_home',  x:2040,y:450, w:240,h:220, zh:'居家馆', sub:'home', url:'https://home.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_marbles',x:1375,y:1070,w:250,h:230, zh:'弹珠馆', sub:'marbles', url:'https://marbles.xiaoercamera.xyz', cat:'museum'},
+ {id:'m_portrait',x:1645,y:1005,w:250,h:230, zh:'肖像馆', sub:'portrait', url:'https://portrait.xiaoercamera.xyz', cat:'museum'},
+ {id:'a_ins',   x:420, y:500, w:150,h:130, zh:'Instagram', sub:'@xiaoerzhan', url:'https://www.instagram.com/xiaoerzhan/', cat:'account'},
+ {id:'a_x',     x:360, y:600, w:140,h:120, zh:'X', sub:'@xiaoerzhan', url:'https://x.com/xiaoerzhan', cat:'account'},
+ {id:'a_xhs',   x:315, y:673, w:130,h:115, zh:'小红书', sub:'小耳朵', url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8', cat:'account'},
+ {id:'a_wechat',x:530, y:795, w:140,h:120, zh:'公众号', sub:'EARS', url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw', cat:'account'},
+ {id:'a_bili',  x:540, y:950, w:140,h:120, zh:'B站', sub:'18947646', url:'https://space.bilibili.com/18947646', cat:'account'},
+ {id:'a_gh',    x:395, y:1265,w:150,h:130, zh:'GitHub', sub:'Jane-xiaoer', url:'https://github.com/Jane-xiaoer', cat:'account'},
+];
+const REGIONS=[
+ {x:820,y:470,zh:'作 品 城 邦',en:'THE WORKS'},
+ {x:1560,y:95,zh:'馆 藏 山 脉',en:'SEVEN HALLS'},
+ {x:250,y:560,zh:'社 媒 群 岛',en:'THE ISLES'},
+ {x:600,y:1200,zh:'联 系 港 湾',en:'THE HARBOUR'},
+];
+const layer=document.getElementById('layer');
+const pc=(v,tot)=>(v/tot*100).toFixed(3)+'%';
+D.forEach((d,i)=>{
+  const lm=document.createElement('div'); lm.className='landmark cat-'+d.cat;
+  lm.style.left=pc(d.x,MW); lm.style.top=pc(d.y,MH); lm.style.width=pc(d.w,MW); lm.style.height=pc(d.h,MH);
+  const lift=document.createElement('div'); lift.className='lift';
+  const fl=document.createElement('div'); fl.className='floaty';
+  fl.style.animationDuration=(4.4+(i%6)*0.45)+'s'; fl.style.animationDelay=(-(i*0.7)%5)+'s';
+  const img=document.createElement('img'); img.className='sprite'; img.src='maps/sprites/'+d.id+'.png'; img.alt=d.zh;
+  fl.appendChild(img); lift.appendChild(fl); lm.appendChild(lift);
+  // label (always visible)
+  const lab=document.createElement('div'); lab.className='label';
+  const cx=d.x+d.w/2, ly=d.ly || (d.y+d.h*0.62);
+  lab.style.left='50%'; lab.style.top=((ly-d.y)/d.h*100)+'%';
+  lab.innerHTML='<span class="zh">'+d.zh+'</span><span class="sub">'+d.sub+' ↗</span>';
+  lm.appendChild(lab);
+  lm.addEventListener('click',()=>window.open(d.url,'_blank','noopener'));
+  layer.appendChild(lm);
+});
+// regions + title
+REGIONS.forEach(r=>{const e=document.createElement('div');e.className='region';
+  e.style.left=pc(r.x,MW);e.style.top=pc(r.y,MH);
+  e.innerHTML='<div class="rz">'+r.zh+'</div><div class="re">'+r.en+'</div>';layer.appendChild(e);});
+const t=document.createElement('div');t.className='title';t.style.left=pc(2120,MW);t.style.top=pc(1355,MH);
+t.innerHTML='<div class="tz">小耳的世界</div><div class="te">THE WORLD OF XIAOER</div>';layer.appendChild(t);
+// parallax (landmarks float above base)
+const base=document.querySelector('.base');
+addEventListener('mousemove',e=>{const mx=(e.clientX/innerWidth-.5),my=(e.clientY/innerHeight-.5);
+  layer.style.transform=`translate(${-mx*1.4}%,${-my*1.4}%)`;
+  base.style.transform=`translate(${mx*.5}%,${my*.5}%)`;});
+</script>
+</body></html>

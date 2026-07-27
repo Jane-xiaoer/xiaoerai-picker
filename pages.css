@@ -366,3 +366,8 @@
 .mug-cap .gc-arrow{font-family:'Special Elite',monospace;font-size:11px;opacity:0;transition:opacity .3s ease}
 .mug:hover .gc-arrow{opacity:.65}
 .mug:hover .mug-svg{transform:translateY(-4px) rotate(-.6deg);filter:drop-shadow(0 5px 6px rgba(30,18,6,.22))}
+
+/* cover header enriched to match the video (bilingual eyebrow + bilingual plate caption) */
+.plate-title .plate-eyebrow{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.36em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
+.plate-title .fig-zh{margin-top:1px;letter-spacing:.14em;opacity:.8}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳奇物室 · 三维房间取景三选一</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#ece2c8;--warm:#e3d2a8;--deep:#c8b488;--ink:#2e1e10;--soft:#4a2f18;--faint:#6a4a28;--red:#8a2a18}
+*{box-sizing:border-box;margin:0}
+body{background:radial-gradient(ellipse 90% 70% at 50% 30%,var(--paper),var(--deep));color:var(--ink);
+  font-family:'Noto Serif SC','EB Garamond',serif;padding:40px 30px 80px;min-height:100vh}
+header{text-align:center;margin-bottom:34px}
+h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:40px;letter-spacing:.5px}
+.sub{font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.38em;color:var(--soft);margin-top:8px}
+.rule{width:min(560px,72vw);height:1px;margin:16px auto 0;background:linear-gradient(90deg,transparent,var(--faint) 20%,var(--faint) 80%,transparent)}
+.rec{max-width:900px;margin:20px auto 0;text-align:center;font-size:16px;line-height:1.75;color:var(--soft)}
+.rec b{color:var(--red);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:34px;max-width:1600px;margin:44px auto 0}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:8px;overflow:hidden;
+  box-shadow:0 12px 40px rgba(20,10,4,.35);display:flex;flex-direction:column}
+.card.pick{outline:3px solid var(--red);outline-offset:4px}
+.card img{width:100%;display:block;border-bottom:1.4px solid var(--ink);cursor:zoom-in}
+.meta{padding:16px 20px 22px}
+.tag{display:inline-block;font-family:'Special Elite',monospace;font-size:11px;letter-spacing:.2em;
+  background:var(--ink);color:var(--paper);padding:3px 10px;border-radius:2px;margin-bottom:10px}
+.pickbadge{background:var(--red)}
+.card h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;margin-bottom:2px}
+.en{font-family:'Special Elite',monospace;font-size:10.5px;letter-spacing:.28em;color:var(--faint);margin-bottom:12px}
+.card p{font-size:15px;line-height:1.7;color:var(--soft)}
+.card .good{color:var(--ink);font-weight:500}
+.note{max-width:900px;margin:50px auto 0;font-size:14px;line-height:1.75;color:var(--soft);
+  border-top:1px solid var(--faint);padding-top:20px}
+.note b{color:var(--ink)}
+/* lightbox */
+#lb{position:fixed;inset:0;background:rgba(15,9,4,.9);display:none;align-items:center;justify-content:center;z-index:50;cursor:zoom-out}
+#lb img{max-width:96vw;max-height:94vh;border:2px solid var(--paper)}
+</style></head>
+<body>
+<header>
+  <h1>奇物室 · 三维房间</h1>
+  <div class="sub">STRICT ENGRAVING · THREE-WALL COZY ROOM · PICK A FRAMING</div>
+  <div class="rule"></div>
+  <p class="rec">严格你主站画风,三面墙、床/窗/写字台、塞满小玩意的温馨小屋 —— 三个<b>三维取景</b>方向,用眼睛挑一个,我把它做扎实再叠密室点击热区。<br>我的偏好:想要"逛地图"的清爽感选 <b>A</b>,想要"人在屋里"的沉浸感选 <b>B</b>。</p>
+</header>
+
+<div class="grid">
+  <div class="card">
+    <img src="renders/room-A-isometric.jpg" alt="A 等距剖面">
+    <div class="meta"><span class="tag">取景 A</span>
+      <h2>等距剖面小屋</h2><div class="en">ISOMETRIC DOLLHOUSE</div>
+      <p><span class="good">像俯瞰一个娃娃屋。</span>三面墙+地板一览无余,家具分区最清楚 —— <b>做点击热区最好排布</b>,一眼看懂全屋。适合"关于我=一张可探索地图"。</p>
+    </div>
+  </div>
+  <div class="card pick">
+    <img src="renders/room-B-perspective.jpg" alt="B 站在屋里">
+    <div class="meta"><span class="tag pickbadge">取景 B · 我略偏这个</span>
+      <h2>站在屋里的透视</h2><div class="en">YOU ARE IN THE ROOM</div>
+      <p><span class="good">最沉浸,最"密室逃脱"。</span>像你推门站进去,书桌暖灯就在手边,细节最扑面。它还自动学会了你主站的标题牌"COZY ROOM · PL.I"。做视差微移镜头会特别活。</p>
+    </div>
+  </div>
+  <div class="card">
+    <img src="renders/room-C-shadowbox.jpg" alt="C 奇物柜盒">
+    <div class="meta"><span class="tag">取景 C</span>
+      <h2>奇物柜标本盒</h2><div class="en">CABINET SHADOWBOX</div>
+      <p><span class="good">最"奇物录"。</span>整间屋装进雕花木框,自带「Xiaoer's Chamber · CABINET N°2」铭牌,正对三面墙、热区好放。像把你这个人做成一件博物馆标本箱。</p>
+    </div>
+  </div>
+</div>
+
+<p class="note">
+<b>说明几件事,免得你误会:</b><br>
+· 图里那些<b>英文/标题字都是 AI 瞎写的乱码</b>,只当装饰占位 —— 真正的铭牌(奇物室、各家具的分类名)后面我用真文本叠上去,清清楚楚。<br>
+· 这三张是<b>2K 效果图</b>,选定后我会:①出 4K 高清 + 需要的话重画调整(某件家具换成你要的、加减细节密度) ②把六类内容的<b>点击热区</b>精确叠到对应家具上(书架=网站群 · 相片墙=关于我 · 抽屉=四房间 · 留声机=小耳FM · 信匣/书桌=找到我 · 画框=视觉实验) ③加视差让它"活"起来。<br>
+· 全程<b>没动你主站一根线</b>,配色字体都是从 scene.css 抠的。<br>
+· 点任意图可放大看细节。
+</p>
+
+<div id="lb"><img src="" alt=""></div>
+<script>
+const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+document.querySelectorAll('.card img').forEach(i=>i.addEventListener('click',()=>{lbi.src=i.src;lb.style.display='flex';}));
+lb.addEventListener('click',()=>lb.style.display='none');
+</script>
+</body></html>

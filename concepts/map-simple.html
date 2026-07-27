@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>小耳的世界 · 复古地图(信息优先)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Special+Elite&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f2ead4;--warm:#e8dcbb;--ink:#2e1e10;--soft:#4a2f18;--faint:#7a5a34;--red:#8a2a18;--gold:#8a6028;--teal:#2a5a4a}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif SC',serif;-webkit-font-smoothing:antialiased;user-select:none}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 80% 80% at 50% 46%,#efe6cf,#d8c8a0)}
+.wrap{position:relative;width:min(100vw,149vh);aspect-ratio:2528/1696}
+.base{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;filter:saturate(1) brightness(1.04)}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 82% 80% at 50% 48%,transparent 60%,rgba(80,55,25,.14) 100%)}
+.layer{position:absolute;inset:0;transition:transform .4s ease-out}
+
+/* the WORLD title */
+.worldtitle{position:absolute;left:50%;top:5.5%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;transition:opacity 1s ease}
+.worldtitle .z{font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(12px,1.28vw,20px);color:var(--ink);letter-spacing:.06em}
+.worldtitle .e{font-family:'Special Elite',monospace;font-size:clamp(7px,.62vw,10px);letter-spacing:.3em;color:var(--soft);margin-top:3px}
+
+/* region headers */
+.rhead{position:absolute;transform:translate(-50%,-50%);text-align:center;pointer-events:none;transition:opacity .85s ease}
+.rhead .z{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(15px,1.7vw,27px);color:var(--soft)}
+.rhead .e{font-family:'Special Elite',monospace;font-size:clamp(8px,.7vw,11px);letter-spacing:.26em;color:var(--faint);margin-top:1px}
+.rhead::after{content:"";display:block;width:52px;height:2px;margin:5px auto 0;background:var(--soft);opacity:.7;filter:url(#rough2)}
+
+/* labels are WRITTEN ONTO the map — engraved place-names, no boxes: soft edgeless paper halo + hand-drawn underline */
+.plaque{position:absolute;transform:translate(-50%,-50%);text-align:center;white-space:nowrap;cursor:pointer;padding:6px 15px;
+  background:radial-gradient(ellipse 62% 64% at 50% 50%,rgba(243,236,216,.92) 34%,rgba(243,236,216,.6) 60%,rgba(243,236,216,0) 80%);
+  transition:transform .34s cubic-bezier(.34,1.4,.4,1), opacity .85s ease}
+.plaque::before{content:"";position:absolute;inset:-16px;z-index:-1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(244,214,138,.55),rgba(244,214,138,0) 68%);opacity:0;transition:opacity .45s ease}
+.plaque:hover::before{opacity:1}
+.plaque .zh{font-family:'Noto Serif SC',serif;font-weight:700;font-size:clamp(12px,1.2vw,18px);color:var(--ink);line-height:1.15;
+  letter-spacing:.02em;text-shadow:0 0 4px var(--paper),0 0 2px var(--paper),0 1px 1px var(--paper)}
+.plaque .rule{height:2px;width:64%;margin:3px auto 2px;background:var(--ink);opacity:.6;filter:url(#rough)}
+.plaque .sub{font-family:'Noto Serif SC',serif;font-weight:500;font-size:clamp(9px,.82vw,12.5px);color:var(--soft);letter-spacing:.02em;
+  text-shadow:0 0 4px var(--paper),0 0 2px var(--paper),0 1px 1px var(--paper)}
+.plaque:hover{transform:translate(-50%,calc(-50% - 3px));z-index:50}
+.plaque:hover .zh{color:var(--red)}
+.plaque:hover .rule{opacity:.9;width:82%;background:var(--red)}
+.plaque.cat-museum:hover .zh{color:var(--teal)} .plaque.cat-museum:hover .rule{background:var(--teal)}
+.plaque.cat-work:hover .zh{color:var(--gold)} .plaque.cat-work:hover .rule{background:var(--gold)}
+.plaque.big{padding:8px 22px}
+.plaque.big .zh{font-size:clamp(16px,1.7vw,26px)}
+.plaque.big .rule{width:78%;height:2.4px}
+.plaque.big .sub{font-size:clamp(10px,.9vw,14px)}
+.plaque.mid{padding:7px 19px}
+.plaque.mid .zh{font-size:clamp(14px,1.5vw,23px)}
+.plaque.mid .rule{width:74%;height:2.2px}
+.plaque.mid .sub{font-size:clamp(9.5px,.86vw,13px)}
+.plaque.sm{padding:5px 11px}
+.plaque.sm .zh{font-size:clamp(11px,1.02vw,15px)}
+.plaque.sm .rule{width:56%}
+.plaque.sm .sub{font-size:clamp(8px,.72vw,11px)}
+.plaque .en2{font-family:'Special Elite',monospace;font-size:clamp(8px,.72vw,11px);letter-spacing:.1em;color:var(--faint);margin-top:2px;
+  text-shadow:0 0 4px var(--paper),0 0 2px var(--paper)}
+.plaque.noclick{cursor:default}
+.plaque.noclick:hover .zh{color:var(--ink)} .plaque.noclick:hover .rule{background:var(--ink);opacity:.6;width:64%}
+
+.credit{position:fixed;right:10px;top:8px;z-index:6;font-family:'Special Elite',monospace;font-size:9px;letter-spacing:.1em;color:rgba(74,47,24,.5)}
+.help{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;pointer-events:none;font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.18em;color:rgba(74,47,24,.6)}
+</style></head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+  <filter id="rough" x="-8%" y="-16%" width="116%" height="132%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.021 0.028" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+  </filter>
+  <filter id="rough2" x="-30%" y="-40%" width="160%" height="180%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.016" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3"/>
+  </filter>
+</defs></svg>
+<div id="stage">
+  <div class="wrap" id="wrap">
+    <img class="base" src="maps/feat-A.jpg" alt=""><!-- clean base; island stamps discarded -->
+    <div class="vig"></div>
+    <div class="layer" id="layer">
+      <div class="worldtitle" style="left:85%;top:83.5%"><div class="z">小耳的世界</div><div class="e">THE WORLD OF XIAOER</div></div>
+    </div>
+  </div>
+</div>
+<div class="help">每一处都是我做的一件事 · 点它前往</div>
+<div class="credit">CONCEPT · SIMPLE MAP · 信息优先 v1</div>
+
+<script>
+// x,y in % of plan-A map. Placed per the approved blueprint (regions each in their own land).
+// cat=accent; big=中央京城; mid=独立地标(Omia/艺术站); url null=非跳转信息牌
+// feat-A: every label anchored to a concrete drawn feature (town / tower-peak / island / castle / lighthouse)
+const HEADS=[
+ {x:16,y:11,z:'奇 物 录 · 作 品 集',e:'THE FOLIO',url:'https://xiaoerai.xyz'},
+ {x:82,y:8, z:'馆 藏 · 七 个 馆',e:'THE HALLS',url:'https://xiaoercamera.xyz'},
+ {x:48,y:79,z:'社 媒 群 岛',e:'THE ISLES'},
+ {x:62,y:53,z:'联 系 港 湾',e:'THE HARBOUR'},
+];
+const P=[
+ // 中央城堡岛 = 关于我
+ {x:48,y:30,cat:'about',big:1,zh:'关于我',sub:'AI 艺术家 · AI Builder · 创作者',url:'https://tools.xiaoerai.xyz/me'},
+ // 北海独岛 = Omia / 西南独岛 = 艺术站
+ {x:51,y:16,cat:'about',mid:1,zh:'Omia',sub:'清爽的万能阅览器 · 产品',url:'https://xiaoeromia.com'},
+ {x:29,y:77,cat:'about',mid:1,zh:'艺术站',sub:'AI 艺术 · 参展 · 作品集',url:'https://xiaoer-art.com'},
+ // 西境大陆 · 4 镇
+ {x:13,y:25,cat:'work',zh:'弹药库',sub:'350+ 自研工具墙',url:'https://tools.xiaoerai.xyz'},
+ {x:29,y:24,cat:'work',zh:'走马灯',sub:'AI 视频 · 广告作品',url:'https://video.xiaoerai.xyz'},
+ {x:14,y:46,cat:'work',zh:'百物匣',sub:'衍生品周边小店',url:'https://store.xiaoerai.xyz'},
+ {x:30,y:43,cat:'work',zh:'鲁班箱',sub:'开源工具 · 点格子看',url:'https://workbox.xiaoerai.xyz'},
+ // 东境山脉 · 7 座塔峰(左右两列拉开,不挤不叠)
+ {x:70,y:27,cat:'museum',zh:'音乐馆',sub:'会画画的音乐播放器',url:'https://fm.xiaoercamera.xyz'},
+ {x:85,y:16,cat:'museum',zh:'相机馆',sub:'相机博物馆交互',url:'https://camera.xiaoercamera.xyz'},
+ {x:69,y:44,cat:'museum',zh:'城市馆',sub:'3D 城市漫游',url:'https://city.xiaoercamera.xyz'},
+ {x:80,y:56,cat:'museum',zh:'跳舞馆',sub:'跳舞 · 星空视觉',url:'https://dance.xiaoercamera.xyz'},
+ {x:88,y:31,cat:'museum',zh:'居家馆',sub:'居家艺术展交互',url:'https://home.xiaoercamera.xyz'},
+ {x:89,y:62,cat:'museum',zh:'弹珠馆',sub:'弹珠物理 · Bits&Poetry',url:'https://marbles.xiaoercamera.xyz'},
+ {x:87,y:47,cat:'museum',zh:'肖像馆',sub:'AI 大牌肖像生成',url:'https://portrait.xiaoercamera.xyz'},
+ // 中部灯塔港湾 · 联系(2)
+ {x:58,y:64,cat:'contact',zh:'微信',sub:'xiaoer-zhan · 加我私聊',url:null},
+ {x:68,y:64,cat:'contact',zh:'邮箱',sub:'合作 · 商务',url:'mailto:xiaoerzhan@gmail.com'},
+ // 南海群岛 · 社媒(7)
+ {x:40,y:86,cat:'account',sm:1,zh:'X',sub:'技术圈主阵地',url:'https://x.com/xiaoerzhan'},
+ {x:50,y:88,cat:'account',sm:1,zh:'小红书',sub:'大众 · 艺术向内容',url:'https://www.xiaohongshu.com/user/profile/56f0a8951c07df433dc499a8'},
+ {x:60,y:85,cat:'account',sm:1,zh:'公众号',sub:'长文深度主阵地',url:'https://mp.weixin.qq.com/s/Bq490vgphMpj-luB1h87gw'},
+ {x:55,y:93,cat:'account',sm:1,zh:'B站',sub:'视频 · 知识',url:'https://space.bilibili.com/18947646'},
+ {x:45,y:58,cat:'account',sm:1,zh:'GitHub',sub:'开源作品 · 此处有龙',url:'https://github.com/Jane-xiaoer'},
+];
+const layer=document.getElementById('layer');
+HEADS.forEach(h=>{const d=document.createElement('div');d.className='rhead';d.style.left=h.x+'%';d.style.top=h.y+'%';
+  d.innerHTML='<div class="z">'+h.z+(h.url?' <span style="font-size:.6em;opacity:.5">↗</span>':'')+'</div><div class="e">'+h.e+'</div>';
+  if(h.url){d.style.pointerEvents='auto';d.style.cursor='pointer';d.addEventListener('click',()=>window.open(h.url,'_blank','noopener'));}
+  layer.appendChild(d);});
+P.forEach(p=>{const d=document.createElement('div');d.className='plaque cat-'+p.cat+(p.big?' big':'')+(p.mid?' mid':'')+(p.sm?' sm':'')+(p.url?'':' noclick');
+  d.style.left=p.x+'%';d.style.top=p.y+'%';
+  d.innerHTML='<div class="zh">'+p.zh+(p.url?' <span style="font-size:.72em;opacity:.5">↗</span>':'')+'</div><div class="rule"></div><div class="sub">'+p.sub+'</div>'+(p.en?'<div class="en2">'+p.en+'</div>':'');
+  if(p.url)d.addEventListener('click',()=>window.open(p.url,'_blank','noopener'));
+  layer.appendChild(d);});
+// gentle parallax
+const layerEl=layer;
+addEventListener('mousemove',e=>{const mx=(e.clientX/innerWidth-.5),my=(e.clientY/innerHeight-.5);
+  layerEl.style.transform=`translate(${-mx*.8}%,${-my*.8}%)`;});
+
+// entrance: center-out bloom (Web Animations API — base stays visible; gated on visibility so it can never stick transparent)
+function bloomIn(){
+  if(!Element.prototype.animate) return;
+  const els=[...layer.querySelectorAll('.plaque,.rhead,.worldtitle')];
+  els.forEach(el=>{
+    const cx=parseFloat(el.style.left)||50, cy=parseFloat(el.style.top)||45;
+    const d=Math.hypot(cx-48,cy-42);
+    el.animate([{opacity:0},{opacity:1}], {duration:760, delay:220+d*15, easing:'ease', fill:'backwards'});
+  });
+}
+if(document.visibilityState==='visible'){ bloomIn(); }
+else { document.addEventListener('visibilitychange',function once(){ if(document.visibilityState==='visible'){bloomIn();document.removeEventListener('visibilitychange',once);} }); }
+</script>
+</body></html>
