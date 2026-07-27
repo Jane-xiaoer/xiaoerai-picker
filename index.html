@@ -180,6 +180,10 @@
     document.querySelectorAll('script[type="text/babel"]').forEach(function (s) {
       s.src = s.src.split('?')[0] + '?v=' + t;
     });
+    // also bust cached stylesheets so CSS edits show on reload (dev only)
+    document.querySelectorAll('link[rel="stylesheet"][href$=".css"]').forEach(function (l) {
+      l.href = l.href.split('?')[0] + '?v=' + t;
+    });
   })();
 </script>
 </body>

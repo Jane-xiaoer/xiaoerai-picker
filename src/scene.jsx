@@ -24,9 +24,17 @@ function DeskLine() {
   );
 }
 
-function Book() {
+function Book({ onOpen }) {
+  const lang = window.useLang();
   return (
-    <svg className="book" viewBox="0 0 260 70">
+    <div className="book book-door" onClick={onOpen} role="button" tabIndex={0}
+         title={window.T.story[lang]} aria-label={window.T.story[lang]}
+         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}>
+      <div className="book-cap">
+        <span className="gc-eyebrow">{window.T.storyEyebrow[lang]}</span>
+        <span className="gc-name">{window.T.story[lang]} <span className="gc-arrow">↗</span></span>
+      </div>
+      <svg className="book-svg" viewBox="0 0 260 70">
       <g filter="url(#wobble)">
         {/* stacked books */}
         <rect x="10" y="36" width="240" height="22" fill="#ece2c8" stroke="#2e1e10" strokeWidth="1.4"/>
@@ -41,7 +49,8 @@ function Book() {
         <line x1="20" y1="26" x2="210" y2="26" stroke="#2e1e10" strokeWidth=".6"/>
         <line x1="20" y1="44" x2="248" y2="44" stroke="#2e1e10" strokeWidth=".6"/>
       </g>
-    </svg>
+      </svg>
+    </div>
   );
 }
 

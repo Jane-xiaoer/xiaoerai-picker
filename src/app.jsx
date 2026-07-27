@@ -1,6 +1,6 @@
 // app.jsx — root app; orchestrates scene states, lamp, drawer, cards, pages, tweaks
 const { Lamp, DeskLine, Book, Mug, Pen, Inkwell, PlateTitle, CornerOrnaments, Dust,
-        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, Globe } = window;
+        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, Globe, StoryOverlay } = window;
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
   "hue": 38,
@@ -18,6 +18,7 @@ function App() {
   const [tweaks, setTweaks] = React.useState({ ...DEFAULT_TWEAKS });
   const [tweaksOpen, setTweaksOpen] = React.useState(false);
   const [sceneMoving, setSceneMoving] = React.useState(false);
+  const [storyOpen, setStoryOpen] = React.useState(false);
 
   // apply tweak vars
   React.useEffect(() => {
@@ -95,7 +96,7 @@ function App() {
 
         <div className={`room-scene ${sceneViewCls} ${sceneMoving ? 'moving' : ''}`}>
           <DeskLine/>
-          <Book/>
+          <Book onOpen={() => setStoryOpen(true)}/>
           <Mug/>
           <Globe onOpen={goToMap}/>
           <Pen/>
@@ -117,6 +118,7 @@ function App() {
       </div>
 
       <PageLayer activeId={activePageId} onBack={backFromPage}/>
+      <StoryOverlay open={storyOpen} onClose={() => setStoryOpen(false)}/>
 
       <Tweaks visible={tweaksOpen} state={tweaks} setState={setTweaks}/>
     </>

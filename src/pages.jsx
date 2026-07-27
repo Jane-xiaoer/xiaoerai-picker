@@ -258,6 +258,107 @@ function ContactPage({ card, onBack }) {
   );
 }
 
+// StoryOverlay — 关于我 · 我的故事. Native content (Jane's development journey),
+// drafted from her own archives; reuses the folio/intro engraving shell. Bilingual.
+function StoryOverlay({ open, onClose }) {
+  const lang = window.useLang();
+  const C = {
+    zh: {
+      back: '← 回到书桌',
+      eyebrow: '关 于 我',
+      title: '我的故事',
+      sub: 'ABOUT · THE STORY SO FAR',
+      dc: '我',
+      bio: [
+        '是小耳（Jane）。AI 创作者、独立内容创业者，也是艺术家。做过视频、图像、Agent，也做过艺术装置——现在把这些手艺拧成一条线：用 AI 造工具、造内容、造一间一个人的公司。',
+        '回头看，我的成长几乎是每隔一两年纵身一跃：放下一份稳定，扎进一个陌生领域，拼命学，直到把它变成自己的底气，然后再跳下一次。国企 → 艺术 → 商学院 → AI，每一跳都不轻松，但每一跳都让世界大了一圈。',
+        '贯穿始终的，是对“美”的执念，和对“从混沌里长出秩序”的着迷——这也是我长期创作项目《初始方程》的内核。眼下我在做的，是把一群比我强很多倍的 AI 组织成一个能自己进化的系统，让一个人也能像一支队伍一样创造。',
+      ],
+      chron: '编 年',
+      timeline: [
+        { y: '2005', t: '毕业于中国传媒大学' },
+        { y: '2015', t: '辞去国企，赴日学习——第一次纵身一跃' },
+        { y: '2016', t: '投身艺术，参与「懒坝」' },
+        { y: '2017', t: '独自远行欧洲一个月' },
+        { y: '2019', t: '参与完成越後妻有大地艺术节' },
+        { y: '2022', t: '逆境备考，考入同济大学 MBA' },
+        { y: '2024', t: '上海求学，踏入 AI' },
+        { y: '2025', t: 'AI 从学习到变现：企业培训、商单；AI × 艺术博主成形' },
+        { y: '2026', t: '独立创作者 · 一人公司 · AI × 艺术' },
+      ],
+    },
+    en: {
+      back: '← Back to Desk',
+      eyebrow: 'ABOUT',
+      title: 'My Story',
+      sub: '关 于 我 · 至 今 为 止',
+      dc: 'I',
+      bio: [
+        "'m Xiaoer (Jane) — an AI creator, an independent maker, and an artist. I've worked in video, image, and agents, and in art installations. Now I'm braiding those crafts into a single line: using AI to build tools, content, and a company of one.",
+        'Looking back, I seem to grow by leaping every year or two — leaving something stable, plunging into an unfamiliar field, studying furiously until it becomes solid ground, then leaping again. State enterprise → art → business school → AI. None of the jumps were easy, but each one made the world a little larger.',
+        'Beneath it all runs one through-line: an obsession with beauty, and a fascination with order emerging from chaos — the heart of my long-running art project, Primordial Equation. Right now I am organizing a team of AIs, each far stronger than me, into a system that evolves on its own — so one person can create like a whole crew.',
+      ],
+      chron: 'CHRONOLOGY',
+      timeline: [
+        { y: '2005', t: 'Graduated, Communication University of China' },
+        { y: '2015', t: 'Left a state job; went to Japan to study — the first leap' },
+        { y: '2016', t: 'Turned to art; joined the “Lazy Dam” project' },
+        { y: '2017', t: 'A month wandering Europe, alone' },
+        { y: '2019', t: 'Helped complete the Echigo-Tsumari Art Triennale' },
+        { y: '2022', t: 'Against the odds, admitted to Tongji University MBA' },
+        { y: '2024', t: 'A year in Shanghai; stepped into AI' },
+        { y: '2025', t: 'AI from learning to earning: training, commissions; an AI × art creator' },
+        { y: '2026', t: 'Independent creator · a company of one · AI × Art' },
+      ],
+    },
+  }[lang];
+
+  return (
+    <div className={`page-layer ${open ? 'active' : ''}`}>
+      <div className="folio-page">
+        <button className="back-btn" onClick={onClose}>{C.back}</button>
+        <div className="folio-inner">
+          <header className="folio-head">
+            <div className="folio-eyebrow">— {C.eyebrow} —</div>
+            <h1 className="folio-title">{C.title}</h1>
+            <div className="folio-sub">{C.sub}</div>
+            <div className="folio-rule">
+              <svg viewBox="0 0 400 20" preserveAspectRatio="none">
+                <g filter="url(#wobble)" stroke="#2e1e10" fill="none">
+                  <line x1="20" y1="10" x2="180" y2="10" strokeWidth="1"/>
+                  <circle cx="200" cy="10" r="3" fill="#2e1e10"/>
+                  <path d="M 193 10 Q 200 4 207 10 Q 200 16 193 10" fill="none" strokeWidth=".6"/>
+                  <line x1="220" y1="10" x2="380" y2="10" strokeWidth="1"/>
+                </g>
+              </svg>
+            </div>
+          </header>
+          <div className="intro-cols">
+            <section className="intro-bio">
+              <p className="dropcap"><span className="dc">{C.dc}</span>{C.bio[0]}</p>
+              <p>{C.bio[1]}</p>
+              <p>{C.bio[2]}</p>
+            </section>
+            <aside className="intro-timeline">
+              <div className="tl-head">— {C.chron} —</div>
+              <ol>
+                {C.timeline.map(e => (
+                  <li key={e.y}>
+                    <span className="tl-year">{e.y}</span>
+                    <span className="tl-mark"/>
+                    <span className="tl-t">{e.t}</span>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+window.StoryOverlay = StoryOverlay;
+
 function PageLayer({ activeId, onBack }) {
   const card = CARDS.find(c => c.id === activeId);
   if (!card) return null;

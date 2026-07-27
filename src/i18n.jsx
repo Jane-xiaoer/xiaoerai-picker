@@ -35,9 +35,11 @@
     cordHint:    { zh: '拉开关',         en: 'pull' },
     cordAria:    { zh: '拉一下点亮台灯 · pull to light', en: 'Pull to light the lamp' },
     drawerHint:  { zh: '拉开抽屉',       en: 'open the drawer' },
-    worldMap:    { zh: '关于我 · 小耳的世界', en: 'About · The World of Xiaoer' },
-    worldMapEyebrow: { zh: '关 于 我',    en: 'ABOUT' },
+    worldMap:    { zh: '小耳的世界 · 全站地图', en: 'The World of Xiaoer · Full Map' },
+    worldMapEyebrow: { zh: '全 部',    en: 'EVERYTHING' },
     worldMapName:    { zh: '小耳的世界',  en: 'The World of Xiaoer' },
+    story:       { zh: '我的故事',    en: 'My Story' },
+    storyEyebrow:{ zh: '关 于 我',    en: 'ABOUT' },
   };
 
   function LangToggle() {

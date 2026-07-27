@@ -292,8 +292,8 @@ html, body {
   pointer-events: none;
 }
 /* book + mug rest ON the desk top — bottoms physically touch the desk surface line */
-.book { left: 9%;  bottom: calc(38% - 20px); width: 260px; height: 70px; }
-.mug  { left: 22%; bottom: calc(38% - 14px); width: 140px; height: 160px; }
+.book { left: 8%;  bottom: calc(38% - 18px); width: 230px; }
+.mug  { left: 31%; bottom: calc(38% - 14px); width: 140px; height: 160px; }
 .pen  { left: 4%;  top: 80%; width: 280px; height: 40px; transform: rotate(6deg); display: none; }
 .inkwell { left: 20%; top: 76%; width: 110px; height: 120px; display: none; }
 
@@ -407,7 +407,7 @@ html, body {
 /* ==================== back buttons ==================== */
 .back-btn, .back-to-room {
   position: fixed;
-  top: 28px; left: 32px;
+  top: 14px; left: 116px;
   z-index: 120;
   display: inline-flex;
   align-items: center;
