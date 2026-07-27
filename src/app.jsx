@@ -1,6 +1,6 @@
 // app.jsx — root app; orchestrates scene states, lamp, drawer, cards, pages, tweaks
 const { Lamp, DeskLine, Book, Mug, Pen, Inkwell, PlateTitle, CornerOrnaments, Dust,
-        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, WorldMapLink } = window;
+        DrawerClosed, DrawerOverlay, Cards, PageLayer, Tweaks, LangToggle, Globe } = window;
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
   "hue": 38,
@@ -81,10 +81,11 @@ function App() {
     view === 'drawer' ? 'view-drawer' :
     'view-card';
 
+  const goToMap = () => { window.location.href = '/me'; };
+
   return (
     <>
       <LangToggle/>
-      <WorldMapLink/>
       <div className={`stage ${lampOn ? 'on' : ''}`}>
         <div className="paper-ground"/>
         <div className={`lamp-glow`}/>
@@ -96,6 +97,7 @@ function App() {
           <DeskLine/>
           <Book/>
           <Mug/>
+          <Globe onOpen={goToMap}/>
           <Pen/>
           <Inkwell/>
           <Lamp on={lampOn} onToggle={toggleLamp}/>

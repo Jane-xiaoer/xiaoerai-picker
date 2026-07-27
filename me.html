@@ -65,7 +65,8 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
 .langtoggle{position:fixed;left:12px;top:11px;z-index:9;display:flex;align-items:stretch;
   border:1.6px solid var(--ink);border-radius:20px;overflow:hidden;background:rgba(243,236,216,.9);
   box-shadow:0 2px 9px rgba(60,40,15,.2);font-family:'Special Elite',monospace;font-size:12px;letter-spacing:.1em;cursor:pointer}
-.langtoggle b{padding:5px 13px;font-weight:400;color:var(--soft);transition:background .25s ease,color .25s ease;user-select:none}
+.langtoggle b{min-width:40px;height:26px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:400;line-height:1;color:var(--soft);transition:background .25s ease,color .25s ease;user-select:none}
 .langtoggle b:first-child{border-right:1.4px solid var(--ink)}
 .langtoggle b.on{background:var(--ink);color:var(--paper)}
 .langtoggle b:not(.on):hover{background:rgba(46,30,16,.1)}

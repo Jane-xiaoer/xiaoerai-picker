@@ -194,7 +194,60 @@ function Dust({ on }) {
   );
 }
 
+// Globe — a desk globe = 小耳的世界; clicking it sails to the whole-site map at /me.
+// Drawn in the same engraving hand as the other desk objects (wobble + hatch).
+function Globe({ onOpen }) {
+  const lang = window.useLang();
+  const ink = '#2e1e10';
+  return (
+    <div className="globe" onClick={onOpen} role="button" tabIndex={0}
+         title={window.T.worldMap[lang]} aria-label={window.T.worldMap[lang]}
+         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); } }}>
+      <svg className="globe-svg" viewBox="0 0 170 214">
+        {/* wooden stand */}
+        <g filter="url(#wobble)" stroke={ink} fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <ellipse cx="85" cy="204" rx="44" ry="7" fill="#ece2c8" strokeWidth="1.5"/>
+          <path d="M 64 204 Q 68 190 76 186 L 94 186 Q 102 190 106 204 Z" fill="#ece2c8" strokeWidth="1.4"/>
+          <rect x="79" y="156" width="12" height="30" fill="#ece2c8" strokeWidth="1.3"/>
+          <rect x="81" y="158" width="8" height="26" fill="url(#hatchVert)" opacity=".4"/>
+          <circle cx="85" cy="156" r="4" fill="#ece2c8" strokeWidth="1"/>
+        </g>
+        {/* brass meridian ring */}
+        <ellipse cx="85" cy="90" rx="61" ry="63" fill="none" stroke={ink} strokeWidth="1.6" filter="url(#wobble)"/>
+        {/* the sphere */}
+        <g filter="url(#wobble)" stroke={ink} fill="none" strokeLinecap="round">
+          <circle cx="85" cy="90" r="56" fill="#ece2c8" strokeWidth="1.7"/>
+          {/* longitude meridians */}
+          <ellipse cx="85" cy="90" rx="19" ry="56" strokeWidth=".7"/>
+          <ellipse cx="85" cy="90" rx="38" ry="56" strokeWidth=".55" opacity=".8"/>
+          {/* latitude parallels */}
+          <line x1="30" y1="90" x2="140" y2="90" strokeWidth=".8"/>
+          <path d="M 38 64 Q 85 58 132 64" strokeWidth=".5" opacity=".75"/>
+          <path d="M 38 116 Q 85 122 132 116" strokeWidth=".5" opacity=".75"/>
+          <path d="M 52 45 Q 85 41 118 45" strokeWidth=".45" opacity=".6"/>
+          <path d="M 52 135 Q 85 139 118 135" strokeWidth=".45" opacity=".6"/>
+          {/* hinted land masses */}
+          <path d="M 48 60 Q 66 50 82 60 Q 92 72 76 82 Q 58 86 50 72 Z" fill="url(#hatch1)" strokeWidth="1"/>
+          <path d="M 96 98 Q 118 92 121 110 Q 118 124 101 123 Q 90 116 92 104 Z" fill="url(#hatch1)" strokeWidth="1"/>
+          <path d="M 66 106 Q 80 102 83 114 Q 78 123 67 119 Z" fill="url(#hatch1)" strokeWidth=".8"/>
+          {/* soft volume shade on the right limb */}
+          <path d="M 128 58 A 56 56 0 0 1 122 130" stroke={ink} strokeWidth="7" opacity=".05"/>
+          {/* tilted axis with knobs */}
+          <line x1="107" y1="30" x2="63" y2="150" strokeWidth="1.2"/>
+          <circle cx="107" cy="30" r="2.6" fill="#ece2c8" strokeWidth="1"/>
+          <circle cx="63" cy="150" r="2.6" fill="#ece2c8" strokeWidth="1"/>
+        </g>
+      </svg>
+      <div className="globe-cap">
+        <span className="gc-eyebrow">{window.T.worldMapEyebrow[lang]}</span>
+        <span className="gc-name">{window.T.worldMapName[lang]} <span className="gc-arrow">↗</span></span>
+      </div>
+    </div>
+  );
+}
+
 window.DeskLine = DeskLine;
+window.Globe = Globe;
 window.Book = Book;
 window.Mug = Mug;
 window.Pen = Pen;
