@@ -545,13 +545,17 @@ html, body {
 @media (max-width: 700px) and (orientation: portrait) {
   :root {
     /* ↓ Jane 2026-08-07 在调参台上逐项拖定,别再按旧值改回去 */
-    --m-lamp-w: 158px;   --m-lamp-h: 332px;  --m-lamp-right: 15%;
+    --m-lamp-w: 120px;   --m-lamp-h: 252px;  --m-lamp-right: 20%;
     --m-cord-w: 56px;    --m-cord-h: 150px;  --m-cord-top: 137px; --m-cord-right: 21px;
     --m-book-w: 89px;    --m-book-left: 1%;
     --m-mug-w: 65px;     --m-mug-left: 18.5%;
     --m-drawer-w: 380px;
-    --m-title-top: 97px; --m-title-size: 28.5px;
+    --m-title-top: 44px; --m-title-size: 22px;
     --m-desk-top: 66.5%;   /* 桌沿高度 —— 决定「上方留白 / 下方抽屉」的比例 */
+    --m-cordhint-right: -59px;   /* 拉开关提示:紧贴绳子右侧 */
+    --m-cordhint-top: 140px;     /* 与绳子把手齐平(桌面版 226px 是按大灯定的,小灯上会掉到桌沿) */
+    --m-drawerhint-gap: 4px;
+    --m-drawer-gap: 22px;   /* 桌沿到抽屉的距离(桌面版 56px) —— 矮屏上「拉开抽屉」提示会掉出屏幕,收窄它 */
   }
   /* 题头下移,别再被左上角语言胶囊压掉「FOLIO OF」那半行 */
   .plate-title { top: var(--m-title-top); }
@@ -579,7 +583,7 @@ html, body {
           bottom: calc(100% - var(--m-desk-top) - 14px); }
 
   /* 抽屉收窄到 300/78vw */
-  .drawer-closed { width: min(var(--m-drawer-w), 78vw); top: calc(var(--m-desk-top) + 56px); }
+  .drawer-closed { width: min(var(--m-drawer-w), 78vw); top: calc(var(--m-desk-top) + var(--m-drawer-gap)); }
 
   /* 四角装饰收小,把边距还给画面 */
   .corner-orn { width: 52px; height: 52px; }
@@ -592,9 +596,10 @@ html, body {
   .cord-hint, .drawer-hint { font-size: 10px; letter-spacing: .12em; }
   /* 「拉开关」提示原来挂在台灯容器右外侧(right:-150px),台灯靠右之后它整个跑出屏幕 92px。
      手机上挪到拉绳左边紧挨着,箭头翻转过来指向右边的拉绳。 */
-  .cord-hint { right: auto; left: var(--m-cordhint-left, 2px); }
-  /* 提示挪到拉绳左边后,箭头要排到文字右侧并改指向右 —— 文字→箭头→拉绳,指向才顺。
-     用 font-size:0 + ::before 换字符,比 transform 翻转稳(不依赖 inline-block 的渲染差异)。*/
-  .cord-hint .cord-hint-arrow { order: 2; font-size: 0; }
-  .cord-hint .cord-hint-arrow::before { content: "\2192"; font-size: 15px; }
+  /* 「拉开关」提示:保持原设计——横排贴在绳子右侧、箭头 ← 指过去。
+     桌面版是 right:-150px(台灯容器外很远),手机上收到 -59px 就紧挨着绳子且不出屏。
+     放绳子左边会隔着灯杆,放正下方会被抽屉压住,都试过。 */
+  .cord-hint { right: var(--m-cordhint-right, -59px); top: var(--m-cordhint-top, 140px); }
+  /* 「拉开抽屉」提示往上提,别掉到屏幕最底下 */
+  .drawer-hint { margin-top: var(--m-drawerhint-gap, 4px); }
 }

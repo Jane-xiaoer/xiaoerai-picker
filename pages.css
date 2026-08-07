@@ -361,3 +361,11 @@
 .plate-title .plate-eyebrow{font-family:'Special Elite',monospace;font-size:10px;letter-spacing:.36em;
   text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
 .plate-title .fig-zh{margin-top:1px;letter-spacing:.14em;opacity:.8}
+
+
+/* 语言胶囊在手机上收小一档（2026-08-07 Jane 真机标注）—— lang-toggle 手机收小 */
+@media (max-width:700px) and (orientation:portrait){
+  .lang-toggle{left:10px;top:10px;font-size:10px;border-width:1.3px}
+  .lang-toggle b{min-width:30px;height:21px;padding:0 7px}
+  .lang-toggle b:first-child{border-right-width:1.1px}
+}
