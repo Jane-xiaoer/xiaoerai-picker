@@ -99,6 +99,32 @@ html,body{height:100%;overflow:hidden;background:#efe6cf;font-family:'Noto Serif
   .maplinks{top:auto;right:10px;bottom:9px;gap:10px;font-size:9px}
   .help{display:none}
 }
+/* ── 竖屏手机 ──
+   病根:.wrap 按「宽」装屏(min(100vw,149vh)) → 390px 宽的手机上地图只剩 262px 高、
+   比原图缩了 6.5 倍;可标签字号 clamp 的下限把字托在 12px 不跟着缩,文字相对地图就放大了 6 倍多,
+   于是叠成一团、冲出图外。改成按「高」装屏 —— 地图缩放比回到和桌面一致(0.46 vs 0.53),
+   文字自然不再打架;代价是要横向拖着看,反而更像在看一张真地图。字号一并换成 vh,跟着地图等比。*/
+@media (max-width:700px) and (orientation:portrait){
+  .wrap{width:auto;height:92vh;will-change:transform}
+  .worldtitle .z{font-size:clamp(11px,1.87vh,20px)}
+  .worldtitle.en .z{font-size:clamp(12px,2.1vh,24px)}
+  .worldtitle .e{font-size:clamp(6.5px,.95vh,10px)}
+  .rhead .z{font-size:clamp(13px,2.5vh,27px)}
+  .rhead .e{font-size:clamp(7px,1.05vh,11px)}
+  .plaque .zh{font-size:clamp(11px,1.76vh,18px)}
+  .plaque .sub{font-size:clamp(8px,1.2vh,12.5px)}
+  .plaque.big .zh{font-size:clamp(15px,2.5vh,26px)}
+  .plaque.big .sub{font-size:clamp(9px,1.32vh,14px)}
+  .plaque.mid .zh{font-size:clamp(13px,2.2vh,23px)}
+  .plaque.mid .sub{font-size:clamp(8.5px,1.26vh,13px)}
+  .plaque.sm .zh{font-size:clamp(10px,1.5vh,15px)}
+  .plaque.sm .sub{font-size:clamp(7.5px,1.06vh,11px)}
+  /* 抬到右下角那排链接上面,并锁一行 —— 不然「点地名前往」会断行、还和链接叠一起 */
+  .help{display:block;bottom:calc(34px + env(safe-area-inset-bottom));font-size:9.5px;letter-spacing:.06em;
+    white-space:nowrap;background:rgba(242,234,212,.78);padding:5px 13px;border-radius:20px;transition:opacity .5s}
+  .help.gone{opacity:0}
+  #stage{touch-action:none}
+}
 </style></head>
 <body>
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
@@ -174,8 +200,8 @@ const P=[
 ];
 
 const T={
-  zh:{ title:'小耳的世界 · 复古地图', world:'小耳的世界', worldSub:'THE WORLD OF XIAOER', help:'每一处都是我做的一件事 · 点它前往', home:'返回主页', htmlLang:'zh-CN' },
-  en:{ title:'The World of Xiaoer · A Vintage Map', world:'The World of Xiaoer', worldSub:'小 耳 的 世 界', help:'every place is something I made · click to visit', home:'Back Home', htmlLang:'en' },
+  zh:{ title:'小耳的世界 · 复古地图', world:'小耳的世界', worldSub:'THE WORLD OF XIAOER', help:'每一处都是我做的一件事 · 点它前往', helpMobile:'拖动看全图 · 双指缩放 · 点地名前往', home:'返回主页', htmlLang:'zh-CN' },
+  en:{ title:'The World of Xiaoer · A Vintage Map', world:'The World of Xiaoer', worldSub:'小 耳 的 世 界', help:'every place is something I made · click to visit', helpMobile:'drag to explore · pinch to zoom · tap a place', home:'Back Home', htmlLang:'en' },
 };
 
 const LS_KEY='xe-lang';            // shared site-wide language preference
@@ -216,7 +242,7 @@ function build(){
     }
     layer.appendChild(d);});
   // chrome
-  helpEl.textContent=t.help;
+  helpEl.textContent=(window.__panMap && t.helpMobile) ? t.helpMobile : t.help;
   document.querySelector('#homelink .tx').textContent=t.home;
   document.title=t.title;
   document.documentElement.lang=t.htmlLang;
@@ -294,6 +320,44 @@ function setLang(l,animate){
 toggle.querySelectorAll('b').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.lang!==LANG) setLang(b.dataset.lang,'fade'); }));
 // react if another tab / the main site flips the shared preference
 addEventListener('storage',e=>{ if(e.key===LS_KEY && (e.newValue==='zh'||e.newValue==='en') && e.newValue!==LANG) setLang(e.newValue,'fade'); });
+
+// ── 竖屏手机:地图按高铺满(见上面那段 CSS 注释),所以要能拖着看 ──
+// 单指拖动平移 / 双指捏合缩放 / 轻点地名照常前往(拖过的那一下不算点击)
+window.__panMap = matchMedia('(max-width:700px) and (orientation:portrait)').matches;
+if(window.__panMap){
+  const stage=document.getElementById('stage'), wrapEl=document.getElementById('wrap');
+  const dist=t=>Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY);
+  let tx=0,ty=0,sc=1, ox=0,oy=0, mode=0, d0=1, sc0=1, moved=false, upAt=0;
+  const apply=()=>{ wrapEl.style.transform=`translate(${tx}px,${ty}px) scale(${sc})`; };
+  const bound=()=>{ // 别把地图拖出屏幕:平移范围就是「地图比屏幕大出来的那一半」
+    const mx=Math.max(0,(wrapEl.offsetWidth*sc-innerWidth)/2),
+          my=Math.max(0,(wrapEl.offsetHeight*sc-innerHeight)/2);
+    tx=Math.max(-mx,Math.min(mx,tx)); ty=Math.max(-my,Math.min(my,ty));
+  };
+  stage.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){ mode=1; moved=false; ox=e.touches[0].clientX-tx; oy=e.touches[0].clientY-ty; }
+    else if(e.touches.length>=2){ mode=2; moved=true; d0=dist(e.touches)||1; sc0=sc; }
+  },{passive:true});
+  stage.addEventListener('touchmove',e=>{
+    if(mode===1&&e.touches.length===1){
+      const t=e.touches[0], nx=t.clientX-ox, ny=t.clientY-oy;
+      if(Math.abs(nx-tx)+Math.abs(ny-ty)>2) moved=true;
+      tx=nx; ty=ny;
+    }else if(mode===2&&e.touches.length>=2){
+      // 下限 .34 = 整张图正好装进竖屏,让人能捏一下看全貌再放大回去看字
+      sc=Math.max(.34,Math.min(3, sc0*dist(e.touches)/d0));
+    }else return;
+    bound(); apply(); e.preventDefault();
+    if(!helpEl.classList.contains('gone')) helpEl.classList.add('gone'); // 上手了就不用再提示
+  },{passive:false});
+  stage.addEventListener('touchend',e=>{ if(!e.touches.length){ mode=0; upAt=Date.now(); }
+    else if(e.touches.length===1){ mode=1; ox=e.touches[0].clientX-tx; oy=e.touches[0].clientY-ty; } });
+  // 拖过的那一下别当成点地名 —— 否则划两下就被带去别的站
+  document.addEventListener('click',e=>{
+    if(moved && Date.now()-upAt<420){ e.stopPropagation(); e.preventDefault(); moved=false; }
+  },true);
+  setTimeout(()=>helpEl.classList.add('gone'), 5200);
+}
 
 // initial paint
 build();
