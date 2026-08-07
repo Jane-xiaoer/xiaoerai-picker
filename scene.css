@@ -590,4 +590,11 @@ html, body {
 
   /* 两个提示标签跟着收 */
   .cord-hint, .drawer-hint { font-size: 10px; letter-spacing: .12em; }
+  /* 「拉开关」提示原来挂在台灯容器右外侧(right:-150px),台灯靠右之后它整个跑出屏幕 92px。
+     手机上挪到拉绳左边紧挨着,箭头翻转过来指向右边的拉绳。 */
+  .cord-hint { right: auto; left: var(--m-cordhint-left, 2px); }
+  /* 提示挪到拉绳左边后,箭头要排到文字右侧并改指向右 —— 文字→箭头→拉绳,指向才顺。
+     用 font-size:0 + ::before 换字符,比 transform 翻转稳(不依赖 inline-block 的渲染差异)。*/
+  .cord-hint .cord-hint-arrow { order: 2; font-size: 0; }
+  .cord-hint .cord-hint-arrow::before { content: "\2192"; font-size: 15px; }
 }
