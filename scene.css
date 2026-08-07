@@ -603,3 +603,18 @@ html, body {
   /* 「拉开抽屉」提示往上提,别掉到屏幕最底下 */
   .drawer-hint { margin-top: var(--m-drawerhint-gap, 4px); }
 }
+
+/* ── 抽屉展开页(下一页)手机竖屏 ──
+   四张卡是「一行四张 + 固定 280×400px」(LAYOUT x=13/38/63/88%),
+   375px 宽的屏上一张卡就占 75%,四张全叠死,只看得见最上面那张。
+   改成 2×2 网格并整体缩小。用 !important 是因为 left/top 由 cards.jsx 写在内联 style 上;
+   :not(.flying) 保证选牌后的飞行动画仍走原逻辑,不被这里锁死。 */
+@media (max-width: 700px) and (orientation: portrait) {
+  .card-slot:not(.flying) { width: var(--m-card-w, 142px) !important; height: var(--m-card-h, 203px) !important; }
+  .cards-layer .card-slot:not(.flying):nth-child(1) { left: calc(28% - 71px) !important; top: calc(37% - 101px) !important; }
+  .cards-layer .card-slot:not(.flying):nth-child(2) { left: calc(72% - 71px) !important; top: calc(37% - 101px) !important; }
+  .cards-layer .card-slot:not(.flying):nth-child(3) { left: calc(28% - 71px) !important; top: calc(73% - 101px) !important; }
+  .cards-layer .card-slot:not(.flying):nth-child(4) { left: calc(72% - 71px) !important; top: calc(73% - 101px) !important; }
+  /* 「回到书桌」收小并移到右上,别压住题头 */
+  .back-btn, .back-to-room { top: 10px; left: auto; right: 12px; font-size: 11px; padding: 5px 11px; }
+}
