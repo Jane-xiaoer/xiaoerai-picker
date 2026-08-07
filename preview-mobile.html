@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>小耳的书桌 · 手机构图调参台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#141009;color:#ece2c8;font-family:"Noto Serif SC","PingFang SC",serif;
+  display:flex;gap:34px;padding:26px 30px;min-height:100vh;align-items:flex-start}
+.left{flex:none}
+h1{font-size:19px;font-weight:500;letter-spacing:.1em;margin-bottom:4px}
+.sub{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.22em;color:rgba(236,226,200,.42);
+  text-transform:uppercase;margin-bottom:14px}
+.phone{width:390px;height:844px;border:9px solid #2b2118;border-radius:34px;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.6);background:#000}
+iframe{width:390px;height:844px;border:0;display:block}
+.bar{display:flex;gap:8px;margin-top:12px}
+.bar button{padding:7px 13px;background:rgba(236,226,200,.1);border:1px solid rgba(236,226,200,.32);
+  color:inherit;font:inherit;font-size:12px;border-radius:6px;cursor:pointer}
+.bar button:hover{background:rgba(236,226,200,.2)}
+.right{flex:1;max-width:400px;position:sticky;top:26px}
+.panel{background:rgba(28,20,12,.7);border:1px solid rgba(236,226,200,.2);border-radius:11px;padding:16px 17px}
+.panel h2{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.26em;font-weight:400;
+  color:#c8a04a;text-transform:uppercase;margin-bottom:13px}
+.r{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:2px}
+.r b{font-weight:600;font-family:ui-monospace,monospace;color:#e0b463}
+input[type=range]{width:100%;margin:0 0 11px;accent-color:#c8a04a}
+.grp{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.2em;color:rgba(236,226,200,.4);
+  margin:13px 0 7px;text-transform:uppercase;border-top:1px solid rgba(236,226,200,.12);padding-top:11px}
+.grp:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.out{margin-top:14px;background:rgba(0,0,0,.4);border:1px solid rgba(236,226,200,.18);border-radius:7px;
+  padding:11px 12px;font-family:ui-monospace,monospace;font-size:10.5px;line-height:1.75;color:rgba(236,226,200,.75);
+  white-space:pre;overflow-x:auto;max-height:190px;overflow-y:auto}
+.hint{font-size:12px;line-height:1.8;color:rgba(236,226,200,.6);margin-top:12px}
+</style></head><body>
+<div class="left">
+  <h1>小耳的书桌 · 手机构图</h1>
+  <div class="sub">iPhone 390 × 844 · 实时预览</div>
+  <div class="phone"><iframe id="fr" src="index.html"></iframe></div>
+  <div class="bar">
+    <button id="lamp">点亮台灯</button>
+    <button id="reload">重新载入</button>
+    <button id="reset">还原默认</button>
+  </div>
+</div>
+<div class="right">
+  <div class="panel">
+    <h2>拖到满意 · 参数自动生成</h2>
+    <div id="sliders"></div>
+    <div class="out" id="out">调一下就会出现在这里</div>
+    <div class="hint">拖到你满意为止，然后把下面这段参数发我，我写死进 <b>scene.css</b>。<br>
+      左边就是真实的 390×844 手机画布，所见即所得。</div>
+  </div>
+</div>
+<script>
+var P=[
+ ['台灯','台灯大小','--m-lamp-w',80,200,1,'px',function(v,d){d.style.setProperty('--m-lamp-h',Math.round(v*2.1)+'px')}],
+ ['台灯','台灯靠右','--m-lamp-right',0,30,0.5,'%'],
+ ['拉绳','拉绳上下','--m-cord-top',60,240,1,'px'],
+ ['拉绳','拉绳左右','--m-cord-right',-10,60,1,'px'],
+ ['拉绳','热区宽','--m-cord-w',30,90,1,'px'],
+ ['拉绳','热区高','--m-cord-h',80,240,1,'px'],
+ ['桌面','桌沿高度','--m-desk-top',40,80,0.5,'%'],
+ ['桌面','书宽','--m-book-w',80,240,1,'px'],
+ ['桌面','书靠左','--m-book-left',0,40,0.5,'%'],
+ ['桌面','杯宽','--m-mug-w',50,180,1,'px'],
+ ['桌面','杯靠左','--m-mug-left',0,60,0.5,'%'],
+ ['其余','抽屉宽','--m-drawer-w',160,380,1,'px'],
+ ['其余','题头上下','--m-title-top',10,140,1,'px'],
+ ['其余','标题字号','--m-title-size',14,34,0.5,'px']
+];
+var fr=document.getElementById('fr'),init={},built=false;
+function doc(){try{return fr.contentDocument.documentElement}catch(e){return null}}
+function readVar(d,n,f){var v=getComputedStyle(d).getPropertyValue(n).trim();var x=parseFloat(v);return isNaN(x)?f:x}
+function build(){
+  var d=doc(); if(!d||built) return; built=true;
+  var host=document.getElementById('sliders'),html='',last='';
+  P.forEach(function(p,i){
+    var cur=readVar(d,p[2],p[3]); init[p[2]]=cur;
+    if(p[0]!==last){ html+='<div class="grp">'+p[0]+'</div>'; last=p[0]; }
+    html+='<div class="r"><span>'+p[1]+'</span><b id="v'+i+'">'+cur+p[6]+'</b></div>'+
+      '<input type="range" data-i="'+i+'" min="'+p[3]+'" max="'+p[4]+'" step="'+p[5]+'" value="'+cur+'">';
+  });
+  host.innerHTML=html;
+  host.addEventListener('input',function(e){
+    var i=e.target.dataset.i; if(i===undefined) return;
+    var p=P[+i],v=parseFloat(e.target.value),d=doc(); if(!d) return;
+    d.style.setProperty(p[2],v+p[6]);
+    if(p[7]) p[7](v,d);
+    document.getElementById('v'+i).textContent=v+p[6];
+    dump();
+  });
+}
+function dump(){
+  var d=doc(); if(!d) return;
+  var lines=P.map(function(p){return '    '+p[2]+': '+readVar(d,p[2],p[3])+p[6]+';'});
+  lines.push('    --m-lamp-h: '+readVar(d,'--m-lamp-h',273)+'px;');
+  document.getElementById('out').textContent=
+    '@media (max-width:700px) and (orientation:portrait){\n  :root{\n'+lines.join('\n')+'\n  }\n}';
+}
+fr.addEventListener('load',function(){ built=false; setTimeout(build,900); });
+document.getElementById('lamp').onclick=function(){
+  try{ var s=fr.contentDocument.querySelector('.stage'); if(s) s.classList.add('on'); }catch(e){}
+};
+document.getElementById('reload').onclick=function(){ fr.src='index.html?r='+Date.now(); };
+document.getElementById('reset').onclick=function(){
+  var d=doc(); if(!d) return;
+  P.forEach(function(p,i){
+    d.style.setProperty(p[2],init[p[2]]+p[6]);
+    if(p[7]) p[7](init[p[2]],d);
+    var inp=document.querySelector('input[data-i="'+i+'"]'); if(inp) inp.value=init[p[2]];
+    var lab=document.getElementById('v'+i); if(lab) lab.textContent=init[p[2]]+p[6];
+  });
+  dump();
+};
+</script></body></html>

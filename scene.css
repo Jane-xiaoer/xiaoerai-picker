@@ -535,3 +535,59 @@ html, body {
   color: var(--ink-faint);
   float: right;
 }
+
+/* ==================== 手机竖屏：按 390×844 画布重排 ====================
+   桌面版所有物件是绝对定位 + 固定 px(台灯 200×420、书 230、杯 160、四角 80×80),
+   零 @media —— 390px 竖屏上台灯占 51% 宽、书和杯直接叠在一起、题头被左上语言胶囊压掉半行,
+   整屏挤成一坨,拉绳也淹没在里面不好按。
+   这里按竖屏画布重新分配:题头下移让开胶囊 → 台灯缩到 0.65 → 桌面书杯错开 → 抽屉收窄。
+   只改尺寸与位置,不动任何颜色(守画风铁律)。参数走变量,方便现场拖。 */
+@media (max-width: 700px) and (orientation: portrait) {
+  :root {
+    /* ↓ Jane 2026-08-07 在调参台上逐项拖定,别再按旧值改回去 */
+    --m-lamp-w: 158px;   --m-lamp-h: 332px;  --m-lamp-right: 15%;
+    --m-cord-w: 56px;    --m-cord-h: 150px;  --m-cord-top: 137px; --m-cord-right: 21px;
+    --m-book-w: 89px;    --m-book-left: 1%;
+    --m-mug-w: 65px;     --m-mug-left: 18.5%;
+    --m-drawer-w: 380px;
+    --m-title-top: 97px; --m-title-size: 28.5px;
+    --m-desk-top: 66.5%;   /* 桌沿高度 —— 决定「上方留白 / 下方抽屉」的比例 */
+  }
+  /* 题头下移,别再被左上角语言胶囊压掉「FOLIO OF」那半行 */
+  .plate-title { top: var(--m-title-top); }
+  .plate-title h1 { font-size: var(--m-title-size); }
+  .plate-title .eyebrow { font-size: 8.5px; letter-spacing: .3em; }
+  .plate-title .fig { font-size: 8.5px; letter-spacing: .22em; }
+  .plate-title .rule { width: 150px; }
+
+  /* 桌沿整体可调:一个变量带动桌线/台灯/书杯/抽屉,保持它们的相对关系 */
+  .desk-line { top: var(--m-desk-top); }
+  /* 台灯缩到 0.65 并往右靠 —— 让出中间,拉绳才不淹没在一坨里 */
+  .lamp-holder { right: var(--m-lamp-right); top: var(--m-desk-top);
+                 width: var(--m-lamp-w); height: var(--m-lamp-h); }
+  /* 拉绳:视觉跟着灯缩,热区反而给足 52×150 —— 好看是一回事,拉得到是另一回事 */
+  .pull-cord { top: var(--m-cord-top); right: var(--m-cord-right);
+               width: var(--m-cord-w); height: var(--m-cord-h); }
+
+  /* 桌面:书与杯错开,不再叠在一起 */
+  /* 书的 SVG 底部自带一截空白(viewBox 70 高、图形只画到 58 → 元素框底还剩 19px 空),
+     原来那个 -18px 是按桌面版 230px 宽的书调的,缩到 89px 后补不够,书就浮在桌面上方 12px。
+     这里按书宽等比补下沉量(89×0.135≈12px),以后再改书宽也会自动坐回桌面。 */
+  .book { left: var(--m-book-left); width: var(--m-book-w);
+          bottom: calc(100% - var(--m-desk-top) - 18px - var(--m-book-w) * 0.135); }
+  .mug  { left: var(--m-mug-left);  width: var(--m-mug-w);
+          bottom: calc(100% - var(--m-desk-top) - 14px); }
+
+  /* 抽屉收窄到 300/78vw */
+  .drawer-closed { width: min(var(--m-drawer-w), 78vw); top: calc(var(--m-desk-top) + 56px); }
+
+  /* 四角装饰收小,把边距还给画面 */
+  .corner-orn { width: 52px; height: 52px; }
+  .corner-orn.tl { top: 10px; left: 10px; }
+  .corner-orn.tr { top: 10px; right: 10px; }
+  .corner-orn.bl { bottom: 10px; left: 10px; }
+  .corner-orn.br { bottom: 10px; right: 10px; }
+
+  /* 两个提示标签跟着收 */
+  .cord-hint, .drawer-hint { font-size: 10px; letter-spacing: .12em; }
+}
